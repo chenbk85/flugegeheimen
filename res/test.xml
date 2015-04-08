@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test>
+	<string>some_string_out_there</string>
+	<integer>100</integer>
+	<attr int_attr="1234"/>
+</test>
