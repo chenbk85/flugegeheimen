@@ -1,6 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <flugegeheimen>
-	<server>
-		<net port="2050">
-		</net>
-	</server>
+    <server>
+        <net port="2050">
+        </net>
+    </server>
+
+    <timer>
+        <channel_0 delay="1"/>
+        <channel_1 delay="2"/>
+        <channel_2 delay="3"/>
+        <channel_3 delay="4"/>
+        <channel_4 delay="4"/>
+        <channel_5 delay="3"/>
+        <channel_6 delay="2"/>
+        <channel_7 delay="1"/>
+    </timer>
+
 </flugegeheimen>

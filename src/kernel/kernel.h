@@ -3,17 +3,19 @@
 namespace Flug {
 
 
-class Kernel {
-public:
-	Kernel ();
-	virtual ~Kernel ();
+	class Kernel {
+	public:
+		Kernel();
 
-	void main ();
+		virtual ~Kernel();
 
-	void loadConfig (const std::string & confPath);
-protected:
-private:
-};
+		void main();
+
+		void loadConfig(const std::string &confPath);
+
+	protected:
+	private:
+	};
 
 
 }
