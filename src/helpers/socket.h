@@ -26,6 +26,10 @@ namespace Flug {
 
 		size_t recv(char *data, size_t size);
 
+		void sendData (const char *data, size_t size);
+
+		void recvData (char * data, size_t size);
+
 	protected:
 		int m_sock;
 	private:

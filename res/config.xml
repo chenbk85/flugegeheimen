@@ -5,15 +5,31 @@
         </net>
     </server>
 
-    <timer>
-        <channel_0 delay="1"/>
+    <timer addr="192.168.0.93" port="2001" channelsNumber="8">
+        <!-- Delay is set in 12.5 ns bins -->
+        <channel_0 delay="100"/>
         <channel_1 delay="2"/>
         <channel_2 delay="3"/>
         <channel_3 delay="4"/>
         <channel_4 delay="4"/>
         <channel_5 delay="3"/>
         <channel_6 delay="2"/>
-        <channel_7 delay="1"/>
+        <channel_7 delay="50"/>
     </timer>
+
+    <adc>
+        <firmware path="res/firmware.bin"/>
+        <net control_port="2001" info_port="2000"/>
+        <devices>
+            <adc_0 addr="192.168.0.21" />
+            <adc_1 addr="192.168.0.22" />
+            <adc_2 addr="192.168.0.23" />
+            <adc_3 addr="192.168.0.24" />
+            <adc_4 addr="192.168.0.25" />
+            <adc_5 addr="192.168.0.26" />
+            <adc_6 addr="192.168.0.27" />
+            <adc_7 addr="192.168.0.28" />
+        </devices>
+    </adc>
 
 </flugegeheimen>

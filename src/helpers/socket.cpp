@@ -140,6 +140,20 @@ namespace Flug {
 		return (size_t) ret;
 	}
 
+	void Socket::sendData (const char * data, size_t size) {
+		size_t chunk = 0;
+		for (size_t sent = 0; sent < size; sent += chunk) {
+			chunk = send(data + sent, size - sent);
+		}
+	}
+
+	void Socket::recvData (char * data, size_t size) {
+		size_t chunk = 0;
+		for (size_t sent = 0; sent < size; sent += chunk) {
+			chunk = recv(data + sent, size - sent);
+		}
+	}
+
 
 /*void Socket::sendString (const std::string & str) {
 	if (m_sock == -1) {

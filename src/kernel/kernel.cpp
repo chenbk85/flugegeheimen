@@ -1,5 +1,6 @@
 #include "../stdafx.h"
 #include "kernel.h"
+#include "../helpers/xml.h"
 
 namespace Flug {
 
@@ -18,15 +19,11 @@ namespace Flug {
 	}
 
 	void Kernel::loadConfig(const std::string &confPath) {
-		std::ifstream testFile(confPath.c_str(), std::ios::binary);
-		std::vector<char> fileContents((std::istreambuf_iterator<char>(testFile)),
-									   std::istreambuf_iterator<char>());
-		rapidxml::xml_document<> conf;
-		conf.parse<0>(fileContents.data());
-
-		std::cout <<
-		conf.first_node("flugegeheimen")->first_node("server")->first_node("net")->first_attribute("port")->value() <<
-		std::endl;
+		Xml xml;
+		xml.loadData("res/config.xml");
+		uint16_t port;
+		xml.get("/flugegeheimen/server/net@port", port);
+		std::cout << port << std::endl;
 	}
 
 
