@@ -9,8 +9,8 @@ namespace Flug {
 		class Adc {
 		public:
 
-			const size_t ADC_PAGE_SIZE = 0x800;
-			const uint8_t ADC_CONTROLL_CMD = 0x80;
+			static const size_t ADC_PAGE_SIZE = 0x800;
+			static const uint8_t ADC_CONTROLL_CMD = 0x80;
 			enum Register {ADC_REG_OFFSET = 0x5, ADC_REG_ADDR = 0x6, ADC_REG_PAGES_NUM = 0x7, ADC_REG_PLL = 0x2,
 				ADC_REG_CLEAR = 0x1, ADC_REG_SOFT_START = 0x3, ADC_REG_ENABLE_START = 0x4};
 			enum RegOperstion {ADC_REGOP_READ = 0x1, ADC_REGOP_WRITE = 0x2};
@@ -18,7 +18,7 @@ namespace Flug {
 			Adc ();
 			virtual ~Adc ();
 
-			void loadConfig (const std::string & xmlPath);
+			void loadConfig (const std::string & xmlPath, size_t deviceNo);
 			void connect ();
 			void disconnect ();
 

@@ -17,18 +17,18 @@
         <channel_7 delay="50"/>
     </timer>
 
-    <adc>
+    <adc modulesCount="8">
         <firmware path="res/firmware.bin"/>
         <net control_port="2001" info_port="2000"/>
         <devices>
-            <adc_0 addr="192.168.0.21" />
-            <adc_1 addr="192.168.0.22" />
-            <adc_2 addr="192.168.0.23" />
-            <adc_3 addr="192.168.0.24" />
-            <adc_4 addr="192.168.0.25" />
-            <adc_5 addr="192.168.0.26" />
-            <adc_6 addr="192.168.0.27" />
-            <adc_7 addr="192.168.0.28" />
+            <adc_0 addr="192.168.0.61"/>
+            <adc_1 addr="192.168.0.62"/>
+            <adc_2 addr="192.168.0.63"/>
+            <adc_3 addr="192.168.0.64"/>
+            <adc_4 addr="192.168.0.65"/>
+            <adc_5 addr="192.168.0.66"/>
+            <adc_6 addr="192.168.0.67"/>
+            <adc_7 addr="192.168.0.68"/>
         </devices>
     </adc>
 

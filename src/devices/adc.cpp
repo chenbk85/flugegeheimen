@@ -14,17 +14,23 @@ namespace Flug {
 
 		}
 
-		void Adc::loadConfig(const std::string &xmlPath) {
+		void Adc::loadConfig(const std::string &xmlPath, size_t deviceNo) {
 			m_config.loadData(xmlPath);
 			m_config.get("/flugegeheimen/adc/firmware@path", m_firmwarePath);
 			m_config.get("/flugegeheimen/adc/net@info_port", m_dataPort);
 			m_config.get("/flugegeheimen/adc/net@control_port", m_controlPort);
-			m_config.get("/flugegeheimen/adc/devices/adc_0@addr", m_addr);
+
+			std::stringstream ss;
+			ss << deviceNo;
+			std::string n;
+			ss >> n;
+			m_config.get("/flugegeheimen/adc/devices/adc_" + n + "@addr", m_addr);
 		}
 
 		void Adc::initDevice() {
 			char buf[ADC_PAGE_SIZE];
 			loadFirmware();
+			clearRegisters();
 			initPll();
 			allowStart();
 			softStart();
@@ -68,6 +74,7 @@ namespace Flug {
 
 		void Adc::softStart() {
 			setRegister(ADC_REG_SOFT_START, ADC_REGOP_WRITE, 0x01, 0x00);
+			sleep(1);
 		}
 
 		void Adc::setCounter(uint16_t counter) {
@@ -147,10 +154,10 @@ namespace Flug {
 			m_dataSocket.recvData(buf+ADC_PAGE_SIZE/2, ADC_PAGE_SIZE/2);
 
 			const uint16_t * data = reinterpret_cast<const uint16_t *>(buf);
-			for (size_t i = 0; i < ADC_PAGE_SIZE / 2; i++) {
+			/*for (size_t i = 0; i < ADC_PAGE_SIZE / 2; i++) {
 				std::cout << data[i];
 			}
-			std::cout << std::endl;
+			std::cout << std::endl;*/
 		}
 	}
 }

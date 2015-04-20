@@ -14,7 +14,7 @@ namespace Flug {
 
 	static void connectorThread(const std::string &host, const std::string &port) {
 		Socket sock;
-		sock.connect(host, port);
+		EXPECT_NO_THROW(sock.connect(host, port));
 		sock.disconnect();
 	}
 
