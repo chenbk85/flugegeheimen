@@ -1,0 +1,6 @@
+[submodule "flugegeheimen-nginx"]
+	path = flugegeheimen-nginx
+	url = git@github.com:achernakov/flugegeheimen-nginx.git
+[submodule "flugegeheimen-nginx-module"]
+	path = flugegeheimen-nginx-module
+	url = git@github.com:achernakov/flugegeheimen-nginx-module.git
