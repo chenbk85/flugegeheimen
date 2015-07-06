@@ -10,11 +10,10 @@ namespace Flug {
 		void load (const std::string & path);
 		void save (const std::string & path);
 
-		std::list<std::vector<std::string> >::iterator begin ();
-		std::list<std::vector<std::string> >::iterator end ();
+
 
 	protected:
-		std::list < std::vector <std::string> > m_data;
 	private:
+		DataTable m_dataTable;
 	};
 }

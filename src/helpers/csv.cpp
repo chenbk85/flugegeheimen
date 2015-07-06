@@ -3,8 +3,8 @@
 
 namespace Flug {
 	Csv::Csv () {
-
 	}
+
 	Csv::~Csv() {
 	}
 
