@@ -34,6 +34,7 @@ namespace Flug {
 	TEST (Socket, TestBind) {
 		Socket sock;
 		EXPECT_NO_THROW(sock.bind("3456"));
+		EXPECT_NO_THROW(sock.listen());
 		std::thread thrd(connectorThread, "localhost", "3456");
 		thrd.join();
 		sock.disconnect();
@@ -45,10 +46,15 @@ namespace Flug {
 		generateRandomData(buf, 16);
 		std::thread thrd(senderThread, "localhost", "3456", buf, 16);
 		EXPECT_NO_THROW(sock.bind("3456"));
-		EXPECT_NO_THROW(sock.recv(rbuf, 16));
+		EXPECT_NO_THROW(sock.listen());
+		int sockfd;
+		EXPECT_NO_THROW(sockfd = sock.accept());
+		Socket reciever(sockfd);
+		EXPECT_NO_THROW(reciever.recv(rbuf, 16));
 		EXPECT_EQ(memcmp(buf, rbuf, 16), 0);
 		thrd.join();
 		sock.disconnect();
+		reciever.disconnect();
 	}
 
 }

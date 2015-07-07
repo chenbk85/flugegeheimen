@@ -22,18 +22,13 @@ namespace Flug {
 	}
 
 	void Socket::connect(const std::string &addr, const std::string &port) {
-		int ret = socket(AF_INET, SOCK_STREAM, 0);
-		if (ret == -1) {
-			throw std::runtime_error("Can't create socket");
-		}
-
 		addrinfo hints, *results;
 
 		memset(&hints, 0, sizeof(addrinfo));
 		hints.ai_family = AF_INET;    /* Allow IPv4 or IPv6 */
 		hints.ai_socktype = SOCK_STREAM; /* Datagram socket */
 
-		ret = getaddrinfo(addr.c_str(), port.c_str(), &hints, &results);
+		int ret = getaddrinfo(addr.c_str(), port.c_str(), &hints, &results);
 		if (ret) {
 			throw std::runtime_error(("Can't getaddrinfo(); of " + addr + ":" + port).c_str());
 		}
@@ -55,11 +50,6 @@ namespace Flug {
 	}
 
 	void Socket::bind(const std::string &port) {
-		int ret = socket(AF_INET, SOCK_STREAM, 0);
-		if (ret == -1) {
-			throw std::runtime_error("Can't create socket");
-		}
-
 		addrinfo hints, *results;
 
 		memset(&hints, 0, sizeof(addrinfo));
@@ -67,8 +57,7 @@ namespace Flug {
 		hints.ai_socktype = SOCK_STREAM; /* Datagram socket */
 		hints.ai_flags = AI_PASSIVE;
 
-
-		ret = getaddrinfo(nullptr, port.c_str(), &hints, &results);
+		int ret = getaddrinfo(nullptr, port.c_str(), &hints, &results);
 		if (ret) {
 			throw std::runtime_error(("Can't getaddrinfo(); port: " + port).c_str());
 		}
