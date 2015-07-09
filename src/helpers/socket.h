@@ -12,6 +12,14 @@ namespace Flug {
 
 		virtual ~Socket();
 
+		operator int () const;
+
+		Socket & operator= (int sockfd);
+
+		Socket & operator= (const Socket & sock);
+
+		void setNonblocking ();
+
 		void connect(const std::string &addr, const std::string &port);
 
 		void bind(const std::string &port);
@@ -29,6 +37,10 @@ namespace Flug {
 		void sendData (const char *data, size_t size);
 
 		void recvData (char * data, size_t size);
+
+		void sendString (const std::string & str);
+
+		void recvString (std::string & str);
 
 	protected:
 		int m_sock;

@@ -21,6 +21,27 @@ namespace Flug {
 	Socket::~Socket() {
 	}
 
+	Socket & Socket::operator= (int sockfd) {
+		m_sock = sockfd;
+		return *this;
+	}
+
+	Socket & Socket::operator= (const Socket & sock) {
+		m_sock = sock.m_sock;
+		return *this;
+	}
+
+	void Socket::setNonblocking () {
+		if (m_sock == -1) {
+			throw std::runtime_error ("Trying to set nonblocking an invalid socket");
+		}
+
+		int ret = fcntl(m_sock, F_SETFL, O_NONBLOCK);
+		if (ret == -1) {
+			throw std::runtime_error ("Setting to nonblock state failed");
+		}
+	}
+
 	void Socket::connect(const std::string &addr, const std::string &port) {
 		addrinfo hints, *results;
 
@@ -141,6 +162,31 @@ namespace Flug {
 		for (size_t sent = 0; sent < size; sent += chunk) {
 			chunk = recv(data + sent, size - sent);
 		}
+	}
+
+	void Socket::sendString (const std::string & str) {
+		if (m_sock == -1) {
+			throw std::runtime_error ("Invalid socket");
+		}
+
+		uint32_t strLen = str.size();
+		sendData(reinterpret_cast<const char*>(&strLen), sizeof(strLen));
+		sendData(str.c_str(), (size_t)strLen);
+	}
+
+	void Socket::recvString (std::string & str) {
+		if (m_sock == -1) {
+			throw std::runtime_error ("Invalid socket");
+		}
+		uint32_t strLen;
+		recvData (reinterpret_cast<char*>(&strLen), sizeof(strLen));
+		std::vector<char> tmpStore((size_t)strLen);
+		recvData (tmpStore.data(), (size_t)strLen);
+		str.assign(tmpStore.begin(), tmpStore.end());
+	}
+
+	Socket::operator int() const {
+		return m_sock;
 	}
 
 

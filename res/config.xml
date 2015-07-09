@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <flugegeheimen>
     <server>
-        <net port="2050">
+        <net port="2345">
         </net>
     </server>
 
