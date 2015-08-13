@@ -189,41 +189,37 @@ namespace Flug {
 		return m_sock;
 	}
 
-
-/*void Socket::sendString (const std::string & str) {
-	if (m_sock == -1) {
-		throw std::runtime_error("Failed to send: not connected");
-	}
-	
-	
-	size_t count = 0, len = str.size();
-	do {
-		int ret = ::send(m_sock, str.c_str() + count, 
-				std::min(DEFAULT_NET_BUF, len - count), 0);
+	bool Socket::recvNonblock(char *data, size_t size, size_t &recvd) {
+		ssize_t ret = ::recv(m_sock, data, size, 0);
 		if (ret == -1) {
-			throw std::runtime_error("Failed to send: send(); returned -1");
-		} else {
-			count += ret;
+			recvd = 0;
+			if (errno == EWOULDBLOCK) {
+				return false;
+			}
+			throw std::runtime_error("::recvNonblock() failed");
 		}
-	} while (count < len);
-}
+		recvd = (size_t) ret;
+		return true;
 
-void Socket::recvString (std::string & str) {
-	if (m_sock == -1) {
-		throw std::runtime_error("Failed to recv: not connected");
 	}
-	
-	char buf[DEFAULT_NET_BUF];
-	size_t count = 0;
-	
-	int ret = ::recv (m_sock, buf, DEFAULT_NET_BUF, 0);
-	if (ret == -1) {
-		throw std::runtime_error("Failed to recv: recv(); returned -1");
+
+	bool Socket::sendNonblock(const char *data, size_t size, size_t &sent) {
+
+		ssize_t ret = ::send(m_sock, data, size, 0);
+		if (ret == -1) {
+			sent = 0;
+			if (errno == EWOULDBLOCK) {
+				return false;
+			}
+			std::cout << "errno: " << errno << std::endl;
+			throw std::runtime_error("::sendNonblock() failed");
+		}
+		sent = (size_t) ret;
+		return true;
 	}
-	str = "";
-	str.insert (0, buf, ret);
-}
-*/
+
+
+
 
 
 }

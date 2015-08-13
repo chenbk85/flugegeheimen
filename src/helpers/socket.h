@@ -42,6 +42,10 @@ namespace Flug {
 
 		void recvString (std::string & str);
 
+		bool sendNonblock (const char * data, size_t size, size_t & sent);
+
+		bool recvNonblock (char * data, size_t size, size_t & recvd);
+
 	protected:
 		int m_sock;
 	private:

@@ -1,34 +1,30 @@
 #pragma once
 
 #include "../helpers/socket.h"
+#include "PollingBuffer.h"
 
 namespace Flug {
 
-	/** Pool class is a singleton */
-	class Pool {
+	static const uint32_t DefaultEvMask = (EPOLLIN | EPOLLOUT);
+
+	/** ConnectionPool class is a singleton */
+	class ConnectionPool {
 		public:
-			static Pool & getInstance ();
-			virtual ~Pool ();
+			ConnectionPool();
+			virtual ~ConnectionPool();
 
-			void addSinkSocket (const Socket & sink);
-			void updateSinkSocket (const Socket & sink);
-			void removeSinkSocket ();
-			void registerSinkCallback ();
+			void addSocket (const Socket & sink, uint32_t evmask = DefaultEvMask);
+			void updateSocket(const Socket &sink, uint32_t evmask = DefaultEvMask);
+			void removeSocket (const Socket &sink);
+			void registerCallback();
 
-			void addDeviceDescriptor (int descr, int ops);
-			void removeDeviceDescriptor (int descr);
-			void registerDeviceCallback ();
-
-			void wait ();
+			size_t wait (epoll_event * evs, size_t maxEvs);
 		protected:
 		private:
 			int m_poll;
+			std::list<PollingBuffer*> m_buffers;
 
-			int m_sinkSock;
 
-			epoll_event m_sinkEventMask;
-
-			Pool ();
 	};
 
 

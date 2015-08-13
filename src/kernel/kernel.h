@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../helpers/socket.h"
+#include "pool.h"
 
 namespace Flug {
 
@@ -16,11 +17,14 @@ namespace Flug {
 		void loadConfig(const std::string &confPath);
 
 
+		void handlingProc ();
+
+
 	protected:
 		void openGateway ();
 
 		Socket m_gateway;
-		Socket m_sink;
+		ConnectionPool m_pool;
 		std::string m_gatewayPort;
 	private:
 	};

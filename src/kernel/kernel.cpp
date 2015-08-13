@@ -1,10 +1,12 @@
 #include "../stdafx.h"
 #include "kernel.h"
 #include "../helpers/xml.h"
+#include "PollingBuffer.h"
 //#include "../config.h"
 
 namespace Flug {
 
+	static const int MaxEventsNo = 10;
 
 	Kernel::Kernel() {
 	}
@@ -12,49 +14,54 @@ namespace Flug {
 	Kernel::~Kernel() {
 	}
 
-	void Kernel::main() {
-		m_gateway.bind(m_gatewayPort);
-		while (1) {
-			m_gateway.listen();
-			/*Socket tmpSocket = m_gateway.accept();
-			if ((int)tmpSocket == -1) {
-				throw std::runtime_error ("Accepted wrong socket");
-			}
-			if (m_sink == -1) {
-				m_sink = tmpSocket;
-			} else {
-				tmpSocket.disconnect();
-			}*/
+	void Kernel::handlingProc() {
+		epoll_event evs[MaxEventsNo];
+		for (; 1;) {
+			size_t evsNo = m_pool.wait(evs, MaxEventsNo);
+			for (size_t evNo = 0; evNo < evsNo; evNo++) {
+				PollingBuffer *pbuf = (PollingBuffer *) evs[evNo].data.ptr;
 
-			m_sink = m_gateway.accept();
+				//std::cout << "#Performin' transmission" << std::endl;
+				pbuf->performTransimission(evs[evNo].events);
+				//std::cout << "#Finished performin' transmission" << std::endl;
 
-			/*char buf[100];
-			bool sinkSocketAlive = true;
-			while (sinkSocketAlive) {
-				try {
-					m_sink.recv(buf, 4);
-					if (!memcmp(buf, "ping", 4)) {
-						m_sink.send("HOLY FUCK! IT WORKS!", sizeof("HOLY FUCK! IT WORKS!"));
-					} else {
-						m_sink.send("HOLY FUCK!", sizeof("HOLY FUCK!"));
-					}
-				} catch (const std::runtime_error & err) {
-					sinkSocketAlive = false;
+				std::string msg;
+				if (pbuf->recvMessage(msg)) {
+					std::cout << "[" << msg << "]" << std::endl;
+					pbuf->sendMessage("{\"status\":\"success\",\"request\":\""
+									  + msg + "\"}");
+				} else {
+//					std::cout << "#No message" << std::endl;
 				}
-			}*/
-
-			std::string req;
-
-
-			m_sink.recvString (req);
-			if (req == "ping") {
-				m_sink.sendString ("Yuppi! It works, you freaking whore.");
-			} else {
-				m_sink.sendString ("Something gone wrong: bad request.");
 			}
+		}
+	}
 
+	void Kernel::main() {
+		std::thread handlingThread(&Kernel::handlingProc, this);
+		m_gateway.bind(m_gatewayPort);
+		/*for (;1;) {
+			m_gateway.listen();
+			m_sink = m_gateway.accept();
+			std::string req;
+			for (;req != "Disconnect!";) {
+				m_sink.recvString(req);
+				if (req == "ping") {
+					m_sink.sendString("Yuppi! It works, you freaking whore.");
+				} else {
+					m_sink.sendString("Something gone wrong: bad request.");
+				}
+			}
 			m_sink.disconnect();
+		}*/
 
+		for (; 1;) {
+			m_gateway.listen();
+			Socket sock(m_gateway.accept());
+			std::cout << "#Adding new connection to polling device . fd="
+					<< (int) sock << std::endl;
+			sock.setNonblocking();
+			m_pool.addSocket(sock);
 		}
 	}
 
@@ -65,7 +72,7 @@ namespace Flug {
 		std::cout << "Started Flugegeheimen on " << m_gatewayPort << std::endl;
 	}
 
-	void Kernel::openGateway () {
+	void Kernel::openGateway() {
 		m_gateway.bind(m_gatewayPort);
 	}
 

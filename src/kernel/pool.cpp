@@ -5,41 +5,22 @@
 namespace Flug {
 
 
-	Pool::Pool () 
-	: m_sinkSock(-1) {
+	ConnectionPool::ConnectionPool() {
 		m_poll = epoll_create (1);
 		if (m_poll == -1) {
 			throw std::runtime_error ("Can't create an epoll instance");
 		}
 	}
 
-	Pool::~Pool () {
+	ConnectionPool::~ConnectionPool() {
+		if (m_poll != -1) {
+			close(m_poll);
+		}
 	}
 
-	Pool & Pool::getInstance () {
-		static Pool pool;
-		return pool;
-	}
 
-	/*void Pool::addGatewaySocket (const Socket & socket) {
-	  if (m_poll == -1) {
-	  throw std::runtime_error ("Epoll instance does not exist");
-	  }
 
-	  if ((int)socket == -1) {
-	  throw std::runtime_error ("Trying to add to epoll an invalid socket");
-	  }
-
-	  epoll_event ev;
-	  ev.events = EPOLLIN;
-	  ev.data.fd = (int) socket;
-	  int err = epoll_ctl (m_poll, EPOLL_CTL_ADD, (int)socket, &ev);
-	  if (err) {
-	  throw std::runtime_error ("Failed to add socket to epoll instance");		
-	  }
-	  }*/
-
-	void Pool::addSinkSocket (const Socket & sink) {
+	void ConnectionPool::addSocket(const Socket &sink, uint32_t evmask) {
 		if (m_poll == -1) {
 			throw std::runtime_error ("Epoll instance does not exist");
 		}
@@ -48,52 +29,51 @@ namespace Flug {
 			throw std::runtime_error ("Trying to add to epoll an invalid socket");
 		}
 
-		m_sinkEventMask.events = EPOLLIN | EPOLLOUT | EPOLLET;
-		m_sinkEventMask.data.fd = (int)sink;
-		m_sinkSock = (int)sink;
+		epoll_event ev;
+		PollingBuffer *pbuf = new PollingBuffer((int)sink);
+		m_buffers.push_back(pbuf);
 
-		int err = epoll_ctl (m_poll, EPOLL_CTL_ADD, (int)sink, &m_sinkEventMask);
+		ev.events = evmask;
+		ev.data.ptr = pbuf;
+
+		int err = epoll_ctl (m_poll, EPOLL_CTL_ADD, (int)sink, &ev);
 		if (err) {
 			throw std::runtime_error ("Can't add sink to polling pool");
 		}
 	}
 
-	void Pool::updateSinkSocket (const Socket & sock) {
-		int err = epoll_ctl (m_poll, EPOLL_CTL_DEL, m_sinkSock, NULL);
-		if (err) {
-			throw std::runtime_error("Can't remove previous sink from poll");
+	void ConnectionPool::updateSocket(const Socket &sock, uint32_t evmask) {
+		if (m_poll == -1) {
+			throw std::runtime_error ("Epoll instance does not exist");
 		}
-		m_sinkSock = (int)sock;
-		m_sinkEventMask.data.fd = (int)sock;
-		err = epoll_ctl (m_poll, EPOLL_CTL_ADD, m_sinkSock, &m_sinkEventMask);
+
+		epoll_event ev;
+		ev.data.fd = (int)sock;
+		ev.events = evmask;
+		int err = epoll_ctl (m_poll, EPOLL_CTL_MOD, (int)sock, &ev);
 		if (err) {
-			throw std::runtime_error("Can't add new sink to poll");
+			throw std::runtime_error("Can't update sink in poll");
 		}
 	}
 
-	void Pool::removeSinkSocket () {
-		int err = epoll_ctl (m_poll, EPOLL_CTL_DEL, m_sinkSock, NULL);
-		if (err) {
-			throw std::runtime_error("Can't remove previous sink from poll");
+	void ConnectionPool::removeSocket (const Socket & sock) {
+		if (m_poll == -1) {
+			throw std::runtime_error ("Epoll instance does not exist");
 		}
-		m_sinkSock = -1;
-		m_sinkEventMask.data.fd = -1;
+
+		int err = epoll_ctl (m_poll, EPOLL_CTL_DEL, (int)sock, NULL);
+		if (err) {
+			throw std::runtime_error("Can't remove sink from poll");
+		}
 	}
 
-	void Pool::wait () {
-		epoll_event events[10];
-		int ret = epoll_wait(m_poll, events, 10, 100);
+	size_t ConnectionPool::wait (epoll_event * evs, size_t maxEvs) {
+		int ret = epoll_wait(m_poll, evs, maxEvs, 100);
 		if (ret == -1) {
 			throw std::runtime_error ("Error while waiting for epoll events");
 		}
 
-		if (ret == 0) {
-			throw std::runtime_error ("No events");
-		}
-
-		if (ret >= 1) {
-			throw std::runtime_error("Lol, it works!");
-		}
+		return ret;
 	}
 
 
