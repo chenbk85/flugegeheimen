@@ -2,6 +2,7 @@
 #include "kernel.h"
 #include "../helpers/xml.h"
 #include "PollingBuffer.h"
+#include "../devices/DummyDevice.h"
 //#include "../config.h"
 
 namespace Flug {
@@ -13,6 +14,33 @@ namespace Flug {
 
 	Kernel::~Kernel() {
 	}
+
+	void Kernel::handleRequest(const std::string &req, std::string &res) {
+		if (req == "getDummyData") {
+			char data[0x100];
+			DummyDevice device;
+			device.getData(data, 0x100);
+			std::string dataJson;
+			dataToJsonArray(data, 0x100, dataJson);
+			res = dataJson;
+		} else {
+			res = "{\"status\":\"success\",\"request\":\""
+				  + req + "\"}";
+		}
+	}
+
+	void Kernel::dataToJsonArray(const char *data, size_t size, std::string &jsonArray) {
+		std::stringstream ss;
+		ss << "[";
+		for (size_t i = 0; i < size; i++) {
+			ss << (int16_t) data[i];
+			if (i != size - 1)
+				ss << ",";
+		}
+		ss << "]";
+		jsonArray = ss.str();
+	}
+
 
 	void Kernel::handlingProc() {
 		epoll_event evs[MaxEventsNo];
@@ -28,8 +56,9 @@ namespace Flug {
 				std::string msg;
 				if (pbuf->recvMessage(msg)) {
 					std::cout << "[" << msg << "]" << std::endl;
-					pbuf->sendMessage("{\"status\":\"success\",\"request\":\""
-									  + msg + "\"}");
+					std::string res;
+					handleRequest(msg, res);
+					pbuf->sendMessage(res);
 				} else {
 //					std::cout << "#No message" << std::endl;
 				}
@@ -59,7 +88,7 @@ namespace Flug {
 			m_gateway.listen();
 			Socket sock(m_gateway.accept());
 			std::cout << "#Adding new connection to polling device . fd="
-					<< (int) sock << std::endl;
+			<< (int) sock << std::endl;
 			sock.setNonblocking();
 			m_pool.addSocket(sock);
 		}

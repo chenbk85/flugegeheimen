@@ -18,8 +18,6 @@ namespace Flug {
 		}
 	}
 
-
-
 	void ConnectionPool::addSocket(const Socket &sink, uint32_t evmask) {
 		if (m_poll == -1) {
 			throw std::runtime_error ("Epoll instance does not exist");
@@ -75,7 +73,5 @@ namespace Flug {
 
 		return ret;
 	}
-
-
 
 }

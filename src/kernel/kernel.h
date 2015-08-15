@@ -16,12 +16,15 @@ namespace Flug {
 
 		void loadConfig(const std::string &confPath);
 
+		void handlingProc();
 
-		void handlingProc ();
+		void handleRequest(const std::string &req, std::string &res);
+
+		void dataToJsonArray(const char *data, size_t size, std::string &jsonArray);
 
 
 	protected:
-		void openGateway ();
+		void openGateway();
 
 		Socket m_gateway;
 		ConnectionPool m_pool;

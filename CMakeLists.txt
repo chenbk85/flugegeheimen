@@ -12,7 +12,7 @@ ADD_SUBDIRECTORY (gtest)
 enable_testing()
 include_directories(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})
 
-add_executable (flugegeheimen ${FLUG_SOURCES})
+add_executable (flugegeheimen ${FLUG_SOURCES} src/devices/DummyDevice.cpp src/devices/DummyDevice.h)
 add_executable(flugegeheimen-unit-test src/test.cpp
 src/helpers/xml.cpp src/helpers/xml_test.cpp
 src/helpers/socket.cpp src/helpers/socket_test.cpp
