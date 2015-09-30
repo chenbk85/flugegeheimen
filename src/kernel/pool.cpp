@@ -1,6 +1,7 @@
 #include "../stdafx.h"
 #include "pool.h"
 
+#define EVENT_WAIT_TIME 100
 
 namespace Flug {
 
@@ -66,7 +67,7 @@ namespace Flug {
 	}
 
 	size_t ConnectionPool::wait (epoll_event * evs, size_t maxEvs) {
-		int ret = epoll_wait(m_poll, evs, maxEvs, 100);
+		int ret = epoll_wait(m_poll, evs, maxEvs, EVENT_WAIT_TIME);
 		if (ret == -1) {
 			throw std::runtime_error ("Error while waiting for epoll events");
 		}

@@ -2,6 +2,8 @@
 
 #include "../helpers/socket.h"
 #include "pool.h"
+#include "Dispatcher.h"
+#include "DeviceManager.h"
 
 namespace Flug {
 
@@ -22,13 +24,17 @@ namespace Flug {
 
 		void dataToJsonArray(const char *data, size_t size, std::string &jsonArray);
 
+		void registerModules();
+
 
 	protected:
-		void openGateway();
 
-		Socket m_gateway;
-		ConnectionPool m_pool;
 		std::string m_gatewayPort;
+		Socket m_gateway;
+
+		ConnectionPool m_pool;
+		Dispatcher m_dispatcher;
+		DeviceManager m_devmgr;
 	private:
 	};
 

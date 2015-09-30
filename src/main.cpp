@@ -15,6 +15,7 @@ int main(int argc, char **argv) {
 	if (argc < 2) {
 		Flug::Kernel kern;
 		kern.loadConfig("res/config.xml");
+		kern.registerModules();
 		kern.main();
 	}
 
