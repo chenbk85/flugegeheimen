@@ -53,7 +53,7 @@ namespace Flug {
 				m_inputData.insert(m_inputData.end(), buf, buf + recvd);
 			}
 		}
-	};
+	}
 
 	void PollingBuffer::performWrite() {
 		if (m_socket == -1) {

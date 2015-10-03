@@ -19,7 +19,7 @@ namespace Flug {
 
 		virtual bool initModule ();
 		virtual bool destroyModule ();
-		virtual bool handleRequest (const std::string & request, std::string & response);
+		virtual bool handleRequest (Request & req, Response & resp);
 
 	protected:
 	private:

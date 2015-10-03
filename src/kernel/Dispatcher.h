@@ -5,6 +5,9 @@
 #pragma once
 
 #include "Module.h"
+#include "Request.h"
+#include "Response.h"
+#include "PollingBuffer.h"
 
 namespace Flug {
 
@@ -14,13 +17,16 @@ namespace Flug {
 					m_name(name), m_module(module) {};
 
 			HandlerRecord () :
-					m_name("NULLMODULE"), m_module(nullptr){
-			}
+					m_name("NULLMODULE"), m_module(nullptr){};
 
 			HandlerRecord &operator=(const HandlerRecord & oth) {
 				m_name = oth.m_name;
 				m_module = oth.m_module;
 				return *this;
+			};
+
+			HandlerRecord (const HandlerRecord & oth) :
+					m_name(oth.m_name), m_module(oth.m_module) {
 			}
 
 			std::string m_name;
@@ -32,8 +38,8 @@ namespace Flug {
 		virtual ~Dispatcher();
 
 		void registerModule(const std::string &moduleName, Module *module);
-		bool dispatchRequest(const std::string & request);
-		bool checkForResponses (std::string & response);
+		bool dispatchRequest(const std::string & request, PollingBuffer * pbuf);
+		bool checkForResponses (Response & response);
 
 
 	protected:

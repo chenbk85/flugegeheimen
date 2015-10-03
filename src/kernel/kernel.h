@@ -34,7 +34,7 @@ namespace Flug {
 
 		ConnectionPool m_pool;
 		Dispatcher m_dispatcher;
-		DeviceManager m_devmgr;
+		DeviceManager * m_devmgr;
 	private:
 	};
 

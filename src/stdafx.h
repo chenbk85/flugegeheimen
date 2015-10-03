@@ -32,4 +32,5 @@
 #include <unistd.h>
 
 #include <boost/lockfree/spsc_queue.hpp>
+#include <boost/lockfree/queue.hpp>
 

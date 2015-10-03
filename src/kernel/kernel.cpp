@@ -2,22 +2,25 @@
 #include "kernel.h"
 #include "../helpers/xml.h"
 #include "../devices/DummyDevice.h"
+#include "RequestEnumerator.h"
+
 
 namespace Flug {
 
 	static const int MaxEventsNo = 10;
 
 	Kernel::Kernel() {
+		m_devmgr = new DeviceManager();
 	}
 
 	Kernel::~Kernel() {
 	}
 
 	void Kernel::registerModules() {
-		m_dispatcher.registerModule("devmgr", static_cast<Module*>(&m_devmgr));
+		m_dispatcher.registerModule("devmgr", m_devmgr);
 	}
 
-	void Kernel::handleRequest(const std::string &req, std::string &res) {
+	void Kernel::handleRequest(const std::string &req, std::string &res) { //OLD AND UNUSED
 		if (req == "getDummyData") {
 			char data[0x100];
 			DummyDevice device;
@@ -30,11 +33,16 @@ namespace Flug {
 				  + req + "}";
 		}
 
-		if (!m_dispatcher.dispatchRequest(req)) {
-			res = "{\"status\":\"failed\"}";
-		} else {
-			res = "{\"status\":\"success\", \"status\":\"failed\"}";
+
+
+		/*Request request(req);
+
+		if (!request.m_parsed) {
+			res = "{\"status\":\"error\",\"description\":\"Wrong JSON format\"}";
+			return;
 		}
+
+		m_dispatcher.dispatchRequest(request);*/
 	}
 
 	void Kernel::dataToJsonArray(const char *data, size_t size, std::string &jsonArray) {
@@ -53,20 +61,30 @@ namespace Flug {
 	void Kernel::handlingProc() {
 		epoll_event evs[MaxEventsNo];
 		for (; 1;) {
-			size_t evsNo = m_pool.wait(evs, MaxEventsNo); //THROTTLING OUT THERE
+			size_t evsNo = m_pool.wait(evs, MaxEventsNo); //THROTTLING OUT THERE?
 			for (size_t evNo = 0; evNo < evsNo; evNo++) {
 				PollingBuffer *pbuf = (PollingBuffer *) evs[evNo].data.ptr;
 
 				pbuf->performTransimission(evs[evNo].events);
 
 				std::string msg;
-				if (pbuf->recvMessage(msg)) {
+				if (pbuf->recvMessage(msg)) { //!check for recieved requests
 					std::cout << "[" << msg << "]" << std::endl;
-					std::string res;
-					handleRequest(msg, res);
-					pbuf->sendMessage(res);
+					m_dispatcher.dispatchRequest(msg, pbuf);
+					//std::string res;
+					//handleRequest(msg, res);
+					//pbuf->sendMessage(res);
 				} else {
-//					std::cout << "#No message" << std::endl;
+					//std::cout << "#No message" << std::endl;
+				}
+			}
+
+			Response resp;
+			while (m_dispatcher.checkForResponses(resp)) {
+				if (resp.m_pbuf) {
+					resp.m_pbuf->sendMessage(resp.m_string);
+				} else {
+					throw std::runtime_error("Null pointer instead of pbuf");
 				}
 			}
 		}

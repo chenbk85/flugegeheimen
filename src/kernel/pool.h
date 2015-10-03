@@ -10,6 +10,7 @@ namespace Flug {
 	/** ConnectionPool class is a singleton */
 	class ConnectionPool {
 		public:
+
 			ConnectionPool();
 			virtual ~ConnectionPool();
 
@@ -23,8 +24,6 @@ namespace Flug {
 		private:
 			int m_poll;
 			std::list<PollingBuffer*> m_buffers;
-
-
 	};
 
 

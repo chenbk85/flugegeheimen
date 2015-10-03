@@ -10,14 +10,19 @@ namespace Flug {
 
 	DeviceManager::~DeviceManager() { }
 
-	bool DeviceManager::initModule() { }
+	bool DeviceManager::initModule() {
+		return true;
+	}
 
-	bool DeviceManager::destroyModule() { }
+	bool DeviceManager::destroyModule() {
+		return true;
+	}
 
-	bool DeviceManager::handleRequest(const std::string &request, std::string &response) {
-		response ="{"
+	bool DeviceManager::handleRequest(Request & req, Response & resp) {
+		resp.m_string ="{"
 				"\"submodule\":\"devmgr\", "
 				"\"status\":\"success\""
 				"}";
+		return true;
 	}
 }

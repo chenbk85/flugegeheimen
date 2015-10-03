@@ -10,9 +10,7 @@
 
 namespace Flug {
 	Module::Module() :
-	m_quitState(false), std::thread(&Module::moduleProc, this),
-	m_inQueue(MAX_MODULE_QUEUE_DEPTH),
-	m_outQueue(MAX_MODULE_QUEUE_DEPTH) {
+	m_quitState(false), std::thread(&Module::moduleProc, this) {
 
 	}
 
@@ -38,21 +36,35 @@ namespace Flug {
 
 
 	void Module::handleIncomingRequests() {
-		std::string request, response;
+		Request request;
+		Response response;
 		while (m_inQueue.pop(request)) {
-			if (!handleRequest(request, response)) {
+			if (!handleRequestWraper(request, response)) {
 				//handle error? yep. write to log.
 			}
 			m_outQueue.push(response);
 		}
 	}
 
-	bool Module::pushRequest(const std::string & req) {
+	bool Module::pushRequest(Request & req) {
+		std::cout <<
+			"\n[" << req.m_string << "]" << "(" << req.m_id << ")\n" << std::endl;
 		return m_inQueue.push(req);
 	}
 
-	bool Module::popResponse(std::string & resp) {
+	bool Module::popResponse(Response & resp) {
 		return m_outQueue.pop(resp);
+	}
+
+	bool Module::handleRequestWraper(Request &req, Response &resp) {
+		if (!req.m_parsed) {
+			throw std::runtime_error("Non-parsed request sent to module handling proc");
+		}
+
+		resp.m_id = req.m_id;
+		resp.m_pbuf = req.m_pbuf;
+
+		return handleRequest(req, resp);
 	}
 
 }
