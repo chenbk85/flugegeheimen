@@ -1,27 +1,28 @@
 //
-// Created by user on 8/14/15.
+// Created by user on 10/4/15.
 //
 
 #pragma once
 
 #include "../kernel/DeviceDriver.h"
 
+
 namespace Flug {
-	class DummyDevice : public DeviceDriver {
+	class AgilentOscope : public DeviceDriver {
 	public:
-		DummyDevice();
+		AgilentOscope ();
+		virtual ~AgilentOscope();
 
-		virtual ~DummyDevice();
-
-		void getData (char * buf, size_t size);
 
 		virtual bool initModule ();
 		virtual bool destroyModule ();
 		virtual bool handleRequest (Request & req, Response & resp);
 		virtual bool isOnline ();
 
-		void dataToJsonArray(const char *data, size_t size, std::string &jsonArray);
+	protected:
+		Socket m_sock;
+		bool m_connected;
+	private:
 	};
-
 }
 

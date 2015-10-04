@@ -4,6 +4,7 @@
 #include "pool.h"
 #include "Dispatcher.h"
 #include "DeviceManager.h"
+#include "DeviceDriver.h"
 
 namespace Flug {
 
@@ -26,6 +27,8 @@ namespace Flug {
 
 		void registerModules();
 
+		void registerDevice (const std::string & deviceName, DeviceDriver * device);
+
 
 	protected:
 
@@ -33,7 +36,7 @@ namespace Flug {
 		Socket m_gateway;
 
 		ConnectionPool m_pool;
-		Dispatcher m_dispatcher;
+		Dispatcher * m_dispatcher;
 		DeviceManager * m_devmgr;
 	private:
 	};

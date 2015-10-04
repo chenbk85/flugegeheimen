@@ -2,7 +2,9 @@
 #include "kernel.h"
 #include "../helpers/xml.h"
 #include "../devices/DummyDevice.h"
+#include "../devices/AgilentOscope.h"
 #include "RequestEnumerator.h"
+
 
 
 namespace Flug {
@@ -11,39 +13,23 @@ namespace Flug {
 
 	Kernel::Kernel() {
 		m_devmgr = new DeviceManager();
+		m_dispatcher = new Dispatcher();
 	}
 
 	Kernel::~Kernel() {
 	}
 
 	void Kernel::registerModules() {
-		m_dispatcher.registerModule("devmgr", m_devmgr);
+		m_dispatcher->registerModule("devmgr", m_devmgr);
+		registerDevice("DummyDevice", new DummyDevice());
+		registerDevice("AgilentOscope", new AgilentOscope());
 	}
 
-	void Kernel::handleRequest(const std::string &req, std::string &res) { //OLD AND UNUSED
-		if (req == "getDummyData") {
-			char data[0x100];
-			DummyDevice device;
-			device.getData(data, 0x100);
-			std::string dataJson;
-			dataToJsonArray(data, 0x100, dataJson);
-			res = dataJson;
-		} else {
-			res = "{\"status\":\"success\",\"request\":"
-				  + req + "}";
-		}
-
-
-
-		/*Request request(req);
-
-		if (!request.m_parsed) {
-			res = "{\"status\":\"error\",\"description\":\"Wrong JSON format\"}";
-			return;
-		}
-
-		m_dispatcher.dispatchRequest(request);*/
+	void Kernel::registerDevice(const std::string &deviceName, DeviceDriver *device) {
+		m_devmgr->registerDevice(deviceName, device);
+		m_dispatcher->registerModule(deviceName, device);
 	}
+
 
 	void Kernel::dataToJsonArray(const char *data, size_t size, std::string &jsonArray) {
 		std::stringstream ss;
@@ -70,7 +56,16 @@ namespace Flug {
 				std::string msg;
 				if (pbuf->recvMessage(msg)) { //!check for recieved requests
 					std::cout << "[" << msg << "]" << std::endl;
-					m_dispatcher.dispatchRequest(msg, pbuf);
+					if (m_dispatcher->hasModule(msg)) {
+						if (!m_dispatcher->dispatchRequest(msg, pbuf)) {
+							pbuf->sendMessage("\"status\":\"error\","
+								  "\"description\":\"Failed to dispatch message\"");
+						}
+					} else {
+						pbuf->sendMessage("\"status\":\"error\","
+						  "\"description\":\"Failed to dispatch message\"");
+
+					}
 					//std::string res;
 					//handleRequest(msg, res);
 					//pbuf->sendMessage(res);
@@ -80,7 +75,7 @@ namespace Flug {
 			}
 
 			Response resp;
-			while (m_dispatcher.checkForResponses(resp)) {
+			while (m_dispatcher->checkForResponses(resp)) {
 				if (resp.m_pbuf) {
 					resp.m_pbuf->sendMessage(resp.m_string);
 				} else {

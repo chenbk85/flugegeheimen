@@ -29,6 +29,11 @@ namespace Flug {
 				m_pbuf(oth.m_pbuf) {
 		}
 
+		Response &operator=(Json::Value & val) {
+			Json::FastWriter writer;
+			m_json = val;
+			m_string = writer.write(val);
+		}
 
 
 		std::string m_string;

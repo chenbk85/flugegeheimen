@@ -13,7 +13,8 @@ namespace Flug {
 		DeviceDriver ();
 		virtual ~DeviceDriver();
 
-		
+		virtual bool isOnline () = 0;
+
 	protected:
 	private:
 	};

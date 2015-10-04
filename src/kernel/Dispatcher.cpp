@@ -29,12 +29,13 @@ namespace Flug {
 			return false;
 		}
 		modName = root["subsystem"].asString();
+
 		std::cout << "Module name: " << modName << std::endl;
 		if (!m_modules[modName].m_module->pushRequest(*req)) {
 			//send error "queue overflow" or "wrong request format"
 			return false;
 		}
-		return false;
+		return true;
 	}
 
 
@@ -49,5 +50,23 @@ namespace Flug {
 			}
 		}
 		return false;
+	}
+
+	bool Dispatcher::hasModule(const std::string &request) {
+		Json::Reader reader;
+		Json::Value root;
+		std::string modName;
+
+
+		if (!reader.parse(request, root)) {
+			return false;
+		}
+
+		modName = root["subsystem"].asString();
+
+		if (m_modules.find(modName) == m_modules.end()) {
+			return false;
+		}
+		return true;
 	}
 }

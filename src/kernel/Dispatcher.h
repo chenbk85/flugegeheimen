@@ -41,6 +41,7 @@ namespace Flug {
 		bool dispatchRequest(const std::string & request, PollingBuffer * pbuf);
 		bool checkForResponses (Response & response);
 
+		bool hasModule(const std::string & request);
 
 	protected:
 	private:
