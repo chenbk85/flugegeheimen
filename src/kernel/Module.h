@@ -8,8 +8,9 @@
 #include "Request.h"
 
 namespace Flug {
-	class Module : public std::thread {
+	class Module {
 	public:
+
 		virtual bool initModule () = 0;
 		virtual bool destroyModule () = 0;
 		virtual bool handleRequest (Request & req, Response & resp) = 0;
@@ -30,6 +31,8 @@ namespace Flug {
 		bool m_quitState;
 		boost::lockfree::spsc_queue<Request, boost::lockfree::capacity<1024> > m_inQueue;
 		boost::lockfree::spsc_queue<Response, boost::lockfree::capacity<1024> > m_outQueue;
+
+		std::thread * m_thread;
 	private:
 	};
 }

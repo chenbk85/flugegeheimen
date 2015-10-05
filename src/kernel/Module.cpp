@@ -10,20 +10,20 @@
 
 namespace Flug {
 	Module::Module() :
-	m_quitState(false), std::thread(&Module::moduleProc, this) {
-
+	m_quitState(false){
+		m_thread = new std::thread(&Module::moduleProc, this);
 	}
 
 	Module::~Module() { }
 
 	void Module::moduleProc() {
-		if (!initModule()) {
+		if (!this->initModule()) {
 			//write to log
 		}
-		while (!m_quitState) {
-			mainLoop();
+		while (!this->m_quitState) {
+			this->mainLoop();
 		}
-		if (!destroyModule()) {
+		if (!this->destroyModule()) {
 			//write to log
 		}
 	}

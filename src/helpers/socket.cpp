@@ -185,6 +185,30 @@ namespace Flug {
 		str.assign(tmpStore.begin(), tmpStore.end());
 	}
 
+	void Socket::sendLine(const std::string &str) {
+		sendData((str + "\n").c_str(), str.length() + 1);
+	}
+
+	void Socket::recvLine(std::string &str) {
+		char buf[DEFAULT_NET_BUF];
+		bool newlineOcured = false;
+		str.clear();
+
+		while (!newlineOcured) {
+			recv(buf, DEFAULT_NET_BUF);
+			char * ptr;
+			if ((ptr = strstr(buf, "\n")) == NULL) {
+				newlineOcured = true;
+				if (ptr) {
+					str.insert(str.end(), buf, ptr);
+				} else {
+					str.insert(str.end(), buf, buf + DEFAULT_NET_BUF);
+				}
+			}
+		}
+	}
+
+
 	Socket::operator int() const {
 		return m_sock;
 	}
@@ -217,8 +241,6 @@ namespace Flug {
 		sent = (size_t) ret;
 		return true;
 	}
-
-
 
 
 

@@ -14,6 +14,7 @@ namespace Flug {
 	Kernel::Kernel() {
 		m_devmgr = new DeviceManager();
 		m_dispatcher = new Dispatcher();
+		m_monitor = new MonitorModule();
 	}
 
 	Kernel::~Kernel() {
@@ -21,6 +22,7 @@ namespace Flug {
 
 	void Kernel::registerModules() {
 		m_dispatcher->registerModule("devmgr", m_devmgr);
+		m_dispatcher->registerModule("monitor", m_monitor);
 		registerDevice("DummyDevice", new DummyDevice());
 		registerDevice("AgilentOscope", new AgilentOscope());
 	}
@@ -91,6 +93,7 @@ namespace Flug {
 
 		for (; 1;) {
 			m_gateway.listen();
+			std::cout << "Got new connection.." << std::endl;
 			Socket sock(m_gateway.accept());
 			sock.setNonblocking();
 			m_pool.addSocket(sock);

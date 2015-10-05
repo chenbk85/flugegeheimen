@@ -24,6 +24,8 @@ namespace Flug {
 
 	protected:
 		std::map<std::string, DeviceDriver * > m_devices;
+
+
 	private:
 	};
 

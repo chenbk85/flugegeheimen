@@ -42,6 +42,9 @@ namespace Flug {
 
 		void recvString (std::string & str);
 
+		void sendLine (const std::string & str);
+		void recvLine (std::string & str);
+
 		bool sendNonblock (const char * data, size_t size, size_t & sent);
 
 		bool recvNonblock (char * data, size_t size, size_t & recvd);

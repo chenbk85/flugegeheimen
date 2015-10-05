@@ -1,26 +1,23 @@
 //
-// Created by user on 9/30/15.
+// Created by user on 10/5/15.
 //
 
-#pragma once
+#ifndef PROJECT_MONITORMODULE_H
+#define PROJECT_MONITORMODULE_H
 
 #include "Module.h"
 
 namespace Flug {
-
-	class DeviceDriver : public Module {
+	class MonitorModule : public Module {
 	public:
-		DeviceDriver ();
-		virtual ~DeviceDriver();
-
-
 		virtual bool initModule ();
 		virtual bool destroyModule ();
 		virtual bool handleRequest (Request & req, Response & resp);
-		virtual bool isOnline () = 0;
 
 	protected:
 	private:
 	};
-
 }
+
+
+#endif //PROJECT_MONITORMODULE_H

@@ -23,15 +23,21 @@ namespace Flug {
 		root["submodule"] = "devmgr";
 		root["status"] = "success";
 		int i = 0;
-		for (auto iter = m_devices.begin();
+		std::cout << "Device enumeration" << std::endl;
+
+		std::map<std::string, DeviceDriver*>::iterator iter;
+		for (iter = m_devices.begin();
 			 iter != m_devices.end(); iter++, i++) {
 			root["devices_list"][i]["name"] = iter->first;
+			std::cout  << "Device :: "<< iter->first << std::endl;
 			if (iter->second->isOnline()) {
 				root["devices_list"][i]["status"] = "online";
 			} else {
 				root["devices_list"][i]["status"] = "offline";
 			}
 		}
+
+		std::cout << "Ended device enumeration" << std::endl;
 		resp = root;
 		return true;
 	}
@@ -48,4 +54,5 @@ namespace Flug {
 			return NULL;
 		}
 	}
+
 }

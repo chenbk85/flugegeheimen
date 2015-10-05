@@ -5,6 +5,7 @@
 #include "Dispatcher.h"
 #include "DeviceManager.h"
 #include "DeviceDriver.h"
+#include "MonitorModule.h"
 
 namespace Flug {
 
@@ -38,6 +39,7 @@ namespace Flug {
 		ConnectionPool m_pool;
 		Dispatcher * m_dispatcher;
 		DeviceManager * m_devmgr;
+		MonitorModule * m_monitor;
 	private:
 	};
 
