@@ -11,6 +11,9 @@
 namespace Flug {
 	Module::Module() :
 	m_quitState(false){
+	}
+
+	void Module::start() {
 		m_thread = new std::thread(&Module::moduleProc, this);
 	}
 

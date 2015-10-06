@@ -24,12 +24,15 @@ namespace Flug {
 		bool m_connected;
 
 		bool command (const std::string & str);
+		bool commandUnsafe (const std::string & str);
 		bool request (const std::string & req, std::string & resp);
 		void getWordData (std::vector<int16_t> & data);
+		double getFloating (const std::string & num);
+		void tryUpdateVariable (const std::string & cmd, const std::string & req,
+								const std::string & val, std::string & newVal);
 
 	private:
-		std::vector<int16_t> m_lastData;
-
+		std::vector<char> m_accumulator;
 
 		size_t parseWordRespHeader (const char * buf,
 									size_t & dataStart);

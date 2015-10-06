@@ -197,13 +197,11 @@ namespace Flug {
 		while (!newlineOcured) {
 			recv(buf, DEFAULT_NET_BUF);
 			char * ptr;
-			if ((ptr = strstr(buf, "\n")) == NULL) {
+			if ((ptr = strstr(buf, "\n")) != NULL) {
 				newlineOcured = true;
-				if (ptr) {
-					str.insert(str.end(), buf, ptr);
-				} else {
-					str.insert(str.end(), buf, buf + DEFAULT_NET_BUF);
-				}
+				str.insert(str.end(), buf, ptr);
+			} else {
+				str.insert(str.end(), buf, buf + DEFAULT_NET_BUF);
 			}
 		}
 	}

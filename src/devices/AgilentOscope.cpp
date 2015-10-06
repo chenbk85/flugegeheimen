@@ -32,6 +32,14 @@ namespace Flug {
 		return true;
 	}
 
+	double AgilentOscope::getFloating(const std::string &num) {
+		std::stringstream ss;
+		ss << num;
+		double ret;
+		ss >> ret;
+		return ret;
+	}
+
 	bool AgilentOscope::handleRequest(Request &req, Response &resp) {
 		Json::Value root;
 		std::string reqtype = req.m_json["reqtype"].asString();
@@ -62,12 +70,22 @@ namespace Flug {
 
 		if (reqtype == "getData") {
 			std::cout << "Started handling the getData() request" << std::endl;
-			std::vector<int16_t> data;
 
+			/*std::cout << "Updating variables" << std::endl;
+
+			for (int i = 0; i < req.m_json["controls"].size(); i++) {
+				std::string newVal;
+				tryUpdateVariable(req.m_json["controls"][i]["cmd"].asString(),
+								  req.m_json["controls"][i]["req"].asString(),
+								  req.m_json["controls"][i]["val"].asString(),
+								  newVal);
+				root["controls"][req.m_json["controls"][i]["id"].asString()] = newVal;
+			}
+
+			std::cout << "Finished updating variables" << std::endl;*/
 
 
 			command(":SYSTEM:HEADER OFF");
-
 			command(":ACQUIRE:MODE RTIME");
 			command(":ACQUIRE:POINTS:AUTO OFF");
 			command(":ACQUIRE:AVERAGE OFF");
@@ -75,34 +93,59 @@ namespace Flug {
 			command(":ACQUIRE:POINTS 500");
 			command(":WAVEFORM:BYTEORDER LSBFIRST");
 			command(":WAVEFORM:FORMAT WORD");
-			//command(":WAVEFORM:POINTS 500");
 
-			command(":TIMEBASE:SCALE 500us");
-			command(":DIGITIZE CHANNEL1");
-			command(":WAVEFORM:SOURCE CHAN1");
-			std::string points;
-			std::cout << "Requesting for waveform points" << std::endl;
-			request(":WAVEFORM:POINTS?", points);
-			std::cout << "Points number is set to " << points << std::endl;
-			command(":WAVEFORM:DATA?");
-			std::cout << "Sent the configuration, recieving data.." << std::endl;
-			getWordData(data);
-			std::cout << "Data recieved, putting to JSON: " << data.size() << " elements" << std::endl;
-
-
-			for (int i = 0; i < data.size(); i++) {
-				root["data"][i] = data[i];
+			std::string digCmd = ":DIGITIZE ";
+			for (int i = 1; i <= 4; i++) {
+				std::stringstream ss;
+				ss << i;
+				std::string chno = ss.str();
+				if (req.m_json["channels"][i-1].asString() == "true") {
+					digCmd += "CHANNEL"+chno+",";
+				}
 			}
+			command(digCmd);
 
-			root["data_size"] = (int) data.size();
+			for (int i = 1; i <= 4; i++) {
+				if (req.m_json["channels"][i-1].asString() == "true") {
+					std::vector<int16_t> data;
 
-			command(":CHAN1:DISPLAY ON");
+					std::stringstream ss;
+					ss << i;
+					std::string chno = ss.str();
+
+					command(":WAVEFORM:SOURCE CHAN" + chno);
+					std::string yIncrStr, yOriginStr, xIncrStr;
+					request(":WAVEFORM:YINCREMENT?", yIncrStr);
+					request(":WAVEFORM:XINCREMENT?", xIncrStr);
+					request(":WAVEFORM:YORIGIN?", yOriginStr);
+					double yIncr = getFloating(yIncrStr);
+					double xIncr = getFloating(xIncrStr);
+					double yOrigin = getFloating(yOriginStr);
+					commandUnsafe(":WAVEFORM:DATA?");
+					std::cout << "Sent the configuration, recieving data.." << std::endl;
+					try {
+						getWordData(data);
+					} catch (std::runtime_error &err) {
+						std::cout << err.what() << std::endl;
+						return false;
+					}
+					std::cout << "Data recieved, putting to JSON: " << data.size() << " elements" << std::endl;
+
+
+					for (int j = 0; j < data.size(); j++) {
+						root["data"][i-1][j] = data[j] * yIncr + yOrigin;
+					}
+
+					root["data_size"] = (int) data.size();
+					root["xincr"] = xIncr;
+
+					command(":CHAN" + chno + ":DISPLAY ON");
+				}
+			}
 			command(":RUN");
 
 			root["status"] = "success";
 		}
-
-		//std::cout << std::endl << writer.write(root) << std::endl;
 
 		std::cout << "Stringify JSON.. " << std::endl;
 		resp = root;
@@ -110,19 +153,35 @@ namespace Flug {
 		return true;
 	}
 
-	bool AgilentOscope::isOnline() {
-		/*std::string str;
-		if (request("*IDN?", str)) {
-			std::cout << str << std::endl;
-			return true;
-		} else {
-			return false;
-		}*/
 
+	void AgilentOscope::tryUpdateVariable(const std::string &cmd, const std::string &req,
+										  const std::string &val, std::string &newVal) {
+
+		command(cmd+' '+val);
+		request(req, newVal);
+	}
+	bool AgilentOscope::isOnline() {
 		return m_connected;
 	}
 
 	bool AgilentOscope::command(const std::string &str) {
+		std::cout << str << std::endl;
+		if (str.find("?") != std::string::npos) {
+			std::cout << "Command string contains '?' mark. That's bullshit." << std::endl;
+			return false;
+		}
+		try {
+			m_sock.sendLine(str);
+			return true;
+		} catch (std::runtime_error &err) {
+			m_connected = false;
+			std::cout << err.what() << std::endl;
+			return false;
+		}
+	}
+
+	bool AgilentOscope::commandUnsafe(const std::string &str) {
+		std::cout << str << std::endl;
 		try {
 			m_sock.sendLine(str);
 			return true;
@@ -134,31 +193,39 @@ namespace Flug {
 	}
 
 	bool AgilentOscope::request(const std::string &req, std::string &resp) {
-		if (!command(req)) {
+		std::cout << req << std::endl;
+
+		if (req.length() == 0 || req[req.length() - 1] != '?') {
+			std::cout << "Request is missterminated or zero-sized" << std::endl;
 			return false;
 		}
 
-		char buf[INFINIIUM_BUF_SIZE];
+		try {
+			m_sock.sendLine(req);
+		} catch (std::runtime_error &err) {
+			m_connected = false;
+			std::cout << err.what() << std::endl;
+			return false;
+		}
 
-		bool gotAllData = false;
+		std::cout << "Getting repsonse" << std::endl;
 
-		resp.clear();
+		try {
+			m_sock.recvLine(resp);
+		} catch (std::runtime_error & err) {
+			m_connected = false;
+			std::cout << err.what() << std::endl;
+			return false;
+		}
 
-		do {
-			size_t size = m_sock.recv(buf, INFINIIUM_BUF_SIZE - 1);
-			for (size_t i = 0; i < size; i++) {
-				if (buf[i] == '\n')
-					gotAllData = true;
-			}
-			resp.append(buf, size);
-		} while (!gotAllData);
-
+		std::cout << resp << std::endl;
 		return true;
 	}
 
 
 	size_t AgilentOscope::parseWordRespHeader(const char *buf,
 											  size_t &dataStart) {
+		std::cout << "Data response header [" << std::string(buf, buf + 10) << "]" << std::endl;
 		if (buf[0] != '#') {
 			throw std::runtime_error("InfiniiumConnection::parseWordRespHeader: \
 					invalid header");
@@ -182,6 +249,7 @@ namespace Flug {
 
 		dataStart = 2 + digitsCount;
 
+		std::cout << "Data count " << dataSize << std::endl;
 		return dataSize;
 
 	}
@@ -220,5 +288,6 @@ namespace Flug {
 			throw std::runtime_error("InfiniiumConnection::getWordData(): wrong message ending");
 		}
 	}
+
 
 }

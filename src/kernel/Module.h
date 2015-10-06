@@ -17,6 +17,7 @@ namespace Flug {
 
 		Module ();
 		virtual ~Module();
+		void start ();
 
 		bool pushRequest (Request & req);
 		bool popResponse (Response & resp);

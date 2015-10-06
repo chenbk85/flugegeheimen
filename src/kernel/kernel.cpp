@@ -15,6 +15,8 @@ namespace Flug {
 		m_devmgr = new DeviceManager();
 		m_dispatcher = new Dispatcher();
 		m_monitor = new MonitorModule();
+		m_devmgr->start();
+		m_monitor->start();
 	}
 
 	Kernel::~Kernel() {
@@ -28,6 +30,10 @@ namespace Flug {
 	}
 
 	void Kernel::registerDevice(const std::string &deviceName, DeviceDriver *device) {
+		if (!device) {
+			throw std::runtime_error("NULL module pointer");
+		}
+		device->start();
 		m_devmgr->registerDevice(deviceName, device);
 		m_dispatcher->registerModule(deviceName, device);
 	}
