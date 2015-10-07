@@ -40,6 +40,109 @@ namespace Flug {
 		return ret;
 	}
 
+	void AgilentOscope::handleCommandRequest(Request &req, Json::Value & root) {
+		bool res = command(req.m_json["request"].asString());
+		if (!res) {
+			root["status"] = "failure";
+			root["description"] = "Can't perform command on Agilent device";
+		} else {
+			root["status"] = "success";
+		}
+	}
+
+	void AgilentOscope::handleRequestRequest(Request &req, Json::Value &root) {
+		std::string response;
+		bool res = request(req.m_json["request"].asString(), response);
+		if (!res) {
+			root["status"] = "failure";
+			root["description"] = "Can't perform request to Agilent device";
+		} else {
+			root["status"] = "success";
+			root["value"] = response;
+		}
+	}
+
+	void AgilentOscope::handleGetDataRequest(Request &req, Json::Value &root) {
+		std::cout << "Started handling the getData() request" << std::endl;
+
+		/*std::cout << "Updating variables" << std::endl;
+
+		for (int i = 0; i < req.m_json["controls"].size(); i++) {
+			std::string newVal;
+			tryUpdateVariable(req.m_json["controls"][i]["cmd"].asString(),
+							  req.m_json["controls"][i]["req"].asString(),
+							  req.m_json["controls"][i]["val"].asString(),
+							  newVal);
+			root["controls"][req.m_json["controls"][i]["id"].asString()] = newVal;
+		}
+
+		std::cout << "Finished updating variables" << std::endl;*/
+
+
+		command(":SYSTEM:HEADER OFF");
+		command(":ACQUIRE:MODE RTIME");
+		command(":ACQUIRE:POINTS:AUTO OFF");
+		command(":ACQUIRE:AVERAGE OFF");
+		command(":ACQUIRE:INTERPOLATE OFF");
+		command(":ACQUIRE:POINTS 500");
+		command(":WAVEFORM:BYTEORDER LSBFIRST");
+		command(":WAVEFORM:FORMAT WORD");
+
+		std::string digCmd = ":DIGITIZE ";
+		for (int i = 1; i <= 4; i++) {
+			std::stringstream ss;
+			ss << i;
+			std::string chno = ss.str();
+			if (req.m_json["channels"][i-1].asString() == "true") {
+				digCmd += "CHANNEL"+chno+",";
+			}
+		}
+		command(digCmd);
+
+		for (int i = 1; i <= 4; i++) {
+			if (req.m_json["channels"][i-1].asString() == "true") {
+				std::vector<int16_t> data;
+
+				std::stringstream ss;
+				ss << i;
+				std::string chno = ss.str();
+
+				command(":WAVEFORM:SOURCE CHAN" + chno);
+				std::string yIncrStr, yOriginStr, xIncrStr;
+				request(":WAVEFORM:YINCREMENT?", yIncrStr);
+				request(":WAVEFORM:XINCREMENT?", xIncrStr);
+				request(":WAVEFORM:YORIGIN?", yOriginStr);
+				double yIncr = getFloating(yIncrStr);
+				double xIncr = getFloating(xIncrStr);
+				double yOrigin = getFloating(yOriginStr);
+				commandUnsafe(":WAVEFORM:DATA?");
+				std::cout << "Sent the configuration, recieving data.." << std::endl;
+				try {
+					getWordData(data);
+				} catch (std::runtime_error &err) {
+					std::cout << err.what() << std::endl;
+					root["status"] = "error";
+					return;
+				}
+				std::cout << "Data recieved, putting to JSON: " << data.size() << " elements" << std::endl;
+
+
+				for (int j = 0; j < data.size(); j++) {
+					root["data"][i-1][j] = data[j] * yIncr + yOrigin;
+				}
+
+				root["data_size"] = (int) data.size();
+				root["xincr"] = xIncr;
+
+				command(":CHAN" + chno + ":DISPLAY ON");
+			}
+		}
+		command(":RUN");
+
+		root["status"] = "success";
+
+	}
+
 	bool AgilentOscope::handleRequest(Request &req, Response &resp) {
 		Json::Value root;
 		std::string reqtype = req.m_json["reqtype"].asString();
@@ -48,103 +151,14 @@ namespace Flug {
 		std::cout << std::endl << writer.write(req.m_json) << std::endl;
 
 		if (reqtype == "command") {
-			bool res = command(req.m_json["request"].asString());
-			if (!res) {
-				root["status"] = "failure";
-				root["description"] = "Can't perform command on Agilent device";
-			} else {
-				root["status"] = "success";
-			}
+			handleCommandRequest(req, root);
 		}
 		if (reqtype == "request") {
-			std::string response;
-			bool res = request(req.m_json["request"].asString(), response);
-			if (!res) {
-				root["status"] = "failure";
-				root["description"] = "Can't perform request to Agilent device";
-			} else {
-				root["status"] = "success";
-				root["value"] = response;
-			}
+			handleRequestRequest(req, root);
 		}
 
 		if (reqtype == "getData") {
-			std::cout << "Started handling the getData() request" << std::endl;
-
-			/*std::cout << "Updating variables" << std::endl;
-
-			for (int i = 0; i < req.m_json["controls"].size(); i++) {
-				std::string newVal;
-				tryUpdateVariable(req.m_json["controls"][i]["cmd"].asString(),
-								  req.m_json["controls"][i]["req"].asString(),
-								  req.m_json["controls"][i]["val"].asString(),
-								  newVal);
-				root["controls"][req.m_json["controls"][i]["id"].asString()] = newVal;
-			}
-
-			std::cout << "Finished updating variables" << std::endl;*/
-
-
-			command(":SYSTEM:HEADER OFF");
-			command(":ACQUIRE:MODE RTIME");
-			command(":ACQUIRE:POINTS:AUTO OFF");
-			command(":ACQUIRE:AVERAGE OFF");
-			command(":ACQUIRE:INTERPOLATE OFF");
-			command(":ACQUIRE:POINTS 500");
-			command(":WAVEFORM:BYTEORDER LSBFIRST");
-			command(":WAVEFORM:FORMAT WORD");
-
-			std::string digCmd = ":DIGITIZE ";
-			for (int i = 1; i <= 4; i++) {
-				std::stringstream ss;
-				ss << i;
-				std::string chno = ss.str();
-				if (req.m_json["channels"][i-1].asString() == "true") {
-					digCmd += "CHANNEL"+chno+",";
-				}
-			}
-			command(digCmd);
-
-			for (int i = 1; i <= 4; i++) {
-				if (req.m_json["channels"][i-1].asString() == "true") {
-					std::vector<int16_t> data;
-
-					std::stringstream ss;
-					ss << i;
-					std::string chno = ss.str();
-
-					command(":WAVEFORM:SOURCE CHAN" + chno);
-					std::string yIncrStr, yOriginStr, xIncrStr;
-					request(":WAVEFORM:YINCREMENT?", yIncrStr);
-					request(":WAVEFORM:XINCREMENT?", xIncrStr);
-					request(":WAVEFORM:YORIGIN?", yOriginStr);
-					double yIncr = getFloating(yIncrStr);
-					double xIncr = getFloating(xIncrStr);
-					double yOrigin = getFloating(yOriginStr);
-					commandUnsafe(":WAVEFORM:DATA?");
-					std::cout << "Sent the configuration, recieving data.." << std::endl;
-					try {
-						getWordData(data);
-					} catch (std::runtime_error &err) {
-						std::cout << err.what() << std::endl;
-						return false;
-					}
-					std::cout << "Data recieved, putting to JSON: " << data.size() << " elements" << std::endl;
-
-
-					for (int j = 0; j < data.size(); j++) {
-						root["data"][i-1][j] = data[j] * yIncr + yOrigin;
-					}
-
-					root["data_size"] = (int) data.size();
-					root["xincr"] = xIncr;
-
-					command(":CHAN" + chno + ":DISPLAY ON");
-				}
-			}
-			command(":RUN");
-
-			root["status"] = "success";
+			handleGetDataRequest(req, root);
 		}
 
 		std::cout << "Stringify JSON.. " << std::endl;

@@ -31,6 +31,14 @@ namespace Flug {
 		void tryUpdateVariable (const std::string & cmd, const std::string & req,
 								const std::string & val, std::string & newVal);
 
+
+		//request handling here
+		void handleGetDataRequest (Request & req, Json::Value & root);
+		void handleCommandRequest (Request & req, Json::Value & root);
+		void handleRequestRequest (Request & req, Json::Value & root);
+		void handleIsOnlineRequest (Request & req, Json::Value & root);
+
+
 	private:
 		std::vector<char> m_accumulator;
 
