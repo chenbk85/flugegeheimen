@@ -30,11 +30,6 @@ namespace Flug {
 			 iter != m_devices.end(); iter++, i++) {
 			root["devices_list"][i]["name"] = iter->first;
 			std::cout  << "Device :: "<< iter->first << std::endl;
-			if (iter->second->isOnline()) {
-				root["devices_list"][i]["status"] = "online";
-			} else {
-				root["devices_list"][i]["status"] = "offline";
-			}
 		}
 
 		std::cout << "Ended device enumeration" << std::endl;

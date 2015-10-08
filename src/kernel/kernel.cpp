@@ -3,6 +3,7 @@
 #include "../helpers/xml.h"
 #include "../devices/DummyDevice.h"
 #include "../devices/AgilentOscope.h"
+#include "../devices/NskSlowAdc.h"
 #include "RequestEnumerator.h"
 
 
@@ -20,6 +21,7 @@ namespace Flug {
 	}
 
 	Kernel::~Kernel() {
+		m_gateway.disconnect();
 	}
 
 	void Kernel::registerModules() {
@@ -27,6 +29,7 @@ namespace Flug {
 		m_dispatcher->registerModule("monitor", m_monitor);
 		registerDevice("DummyDevice", new DummyDevice());
 		registerDevice("AgilentOscope", new AgilentOscope());
+		registerDevice("NskSlowAdc", new NskSlowAdc());
 	}
 
 	void Kernel::registerDevice(const std::string &deviceName, DeviceDriver *device) {

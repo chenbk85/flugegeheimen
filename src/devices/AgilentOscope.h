@@ -17,7 +17,6 @@ namespace Flug {
 		virtual bool initModule ();
 		virtual bool destroyModule ();
 		virtual bool handleRequest (Request & req, Response & resp);
-		virtual bool isOnline ();
 
 	protected:
 		Socket m_sock;

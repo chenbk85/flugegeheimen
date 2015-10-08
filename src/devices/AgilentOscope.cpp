@@ -152,13 +152,12 @@ namespace Flug {
 
 		if (reqtype == "command") {
 			handleCommandRequest(req, root);
-		}
-		if (reqtype == "request") {
+		} else if (reqtype == "request") {
 			handleRequestRequest(req, root);
-		}
-
-		if (reqtype == "getData") {
+		} else if (reqtype == "getData") {
 			handleGetDataRequest(req, root);
+		} else if (reqtype == "getDeviceInfo") {
+			handleIsOnlineRequest(req, root);
 		}
 
 		std::cout << "Stringify JSON.. " << std::endl;
@@ -168,14 +167,28 @@ namespace Flug {
 	}
 
 
+	void AgilentOscope::handleIsOnlineRequest(Request &req, Json::Value &root) {
+		std::string idn = "";
+		if (m_connected) {
+			request("*IDN?", idn);
+		}
+
+		root["deviceType"] = "AgilentOscope";
+		if (idn != "") {
+			root["deviceName"] = "AgilentOscope";
+			root["deviceType"] = idn;
+			root["deviceStatus"] = "online";
+		} else {
+			root["deviceStatus"] = "offline";
+		}
+		root["status"] = "success";
+	}
+
 	void AgilentOscope::tryUpdateVariable(const std::string &cmd, const std::string &req,
 										  const std::string &val, std::string &newVal) {
 
 		command(cmd+' '+val);
 		request(req, newVal);
-	}
-	bool AgilentOscope::isOnline() {
-		return m_connected;
 	}
 
 	bool AgilentOscope::command(const std::string &str) {

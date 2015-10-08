@@ -30,14 +30,27 @@ namespace Flug {
 	}
 
 	bool DummyDevice::handleRequest(Request &req, Response &resp) {
-		if (req.m_json["request"].asString() != "getDummyData") {
+		std::string reqtype = req.m_json["reqtype"].asString();
+		Json::Value root;
+
+
+		if (reqtype == "getDeviceInfo") {
+			root["deviceType"] = "DummyDevice";
+			root["deviceName"] = "DummyDevice";
+			root["deviceStatus"] = "online";
+			root["status"] = "success";
+			resp = root;
+			return true;
+		} else if (reqtype == "getDummyData") {
+			char data[0x100];
+			getData(data, 0x100);
+			std::string dataJson;
+			dataToJsonArray(data, 0x100, dataJson);
+			resp.m_string = dataJson;
+		} else {
 			return false;
 		}
-		char data[0x100];
-		getData(data, 0x100);
-		std::string dataJson;
-		dataToJsonArray(data, 0x100, dataJson);
-		resp.m_string = dataJson;
+
 		return true;
 	}
 

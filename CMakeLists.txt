@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 2.6)
 set (FLUG_SOURCES src/main.cpp src/kernel/kernel.cpp src/helpers/socket.cpp src/helpers/xml.cpp
 src/kernel/request_builder.cpp src/kernel/response_parser.cpp
 src/devices/timer.cpp src/devices/adc.cpp src/helpers/binres.cpp
-src/kernel/pool.cpp src/kernel/PollingBuffer.cpp src/devices/DummyDevice.cpp src/kernel/Dispatcher.cpp src/kernel/Dispatcher.h src/kernel/DeviceManager.cpp src/kernel/DeviceManager.h src/kernel/Module.cpp src/kernel/Module.h src/kernel/DeviceDriver.cpp src/kernel/DeviceDriver.h src/kernel/RequestEnumerator.cpp src/kernel/RequestEnumerator.h src/kernel/Request.h src/kernel/Response.h src/devices/AgilentOscope.cpp src/devices/AgilentOscope.h src/kernel/MonitorModule.cpp src/kernel/MonitorModule.h)
+src/kernel/pool.cpp src/kernel/PollingBuffer.cpp src/devices/DummyDevice.cpp src/kernel/Dispatcher.cpp src/kernel/Dispatcher.h src/kernel/DeviceManager.cpp src/kernel/DeviceManager.h src/kernel/Module.cpp src/kernel/Module.h src/kernel/DeviceDriver.cpp src/kernel/DeviceDriver.h src/kernel/RequestEnumerator.cpp src/kernel/RequestEnumerator.h src/kernel/Request.h src/kernel/Response.h src/devices/AgilentOscope.cpp src/devices/AgilentOscope.h src/kernel/MonitorModule.cpp src/kernel/MonitorModule.h src/devices/NskSlowAdc.cpp src/devices/NskSlowAdc.h)
 
 list( APPEND CMAKE_CXX_FLAGS "-std=c++11 ${CMAKE_CXX_FLAGS} -g -ftest-coverage -fprofile-arcs -pthread")
 
