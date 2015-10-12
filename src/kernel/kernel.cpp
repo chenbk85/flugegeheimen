@@ -7,7 +7,6 @@
 #include "RequestEnumerator.h"
 
 
-
 namespace Flug {
 
 	static const int MaxEventsNo = 10;
@@ -70,11 +69,11 @@ namespace Flug {
 					if (m_dispatcher->hasModule(msg)) {
 						if (!m_dispatcher->dispatchRequest(msg, pbuf)) {
 							pbuf->sendMessage("\"status\":\"error\","
-								  "\"description\":\"Failed to dispatch message\"");
+													  "\"description\":\"Failed to dispatch message\"");
 						}
 					} else {
 						pbuf->sendMessage("\"status\":\"error\","
-						  "\"description\":\"Failed to dispatch message\"");
+												  "\"description\":\"Failed to dispatch message\"");
 
 					}
 					//std::string res;
@@ -110,10 +109,25 @@ namespace Flug {
 	}
 
 	void Kernel::loadConfig(const std::string &confPath) {
-		Xml xml;
+		/*Xml xml;
 		xml.loadData(confPath);
 		xml.get("/flugegeheimen/server/net@port", m_gatewayPort);
+		std::cout << "Starting Flugegeheimen on " << m_gatewayPort << std::endl;*/
+
+		std::ostringstream contents;
+		std::ifstream file(confPath);
+		if (!file.is_open()) {
+			throw std::runtime_error("Failed to load config");
+		}
+		contents << file.rdbuf();
+		std::string confStr = contents.str();
+
+		Json::Reader reader;
+		Json::Value config;
+		reader.parse(confStr, config);
+		m_gatewayPort = config["server"]["port"].asUInt();
 		std::cout << "Starting Flugegeheimen on " << m_gatewayPort << std::endl;
+
 	}
 
 }
