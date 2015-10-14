@@ -6,16 +6,18 @@
 
 #include "Response.h"
 #include "Request.h"
+#include "Configurable.h"
 
 namespace Flug {
-	class Module {
+	class Module : public Configurable {
 	public:
 
 		virtual bool initModule () = 0;
 		virtual bool destroyModule () = 0;
 		virtual bool handleRequest (Request & req, Response & resp) = 0;
 
-		Module ();
+		Module () = delete;
+		Module (const std::string & deviceInstanceName);
 		virtual ~Module();
 		void start ();
 

@@ -1,10 +1,9 @@
 #include "../stdafx.h"
 #include "kernel.h"
-#include "../helpers/xml.h"
 #include "../devices/DummyDevice.h"
 #include "../devices/AgilentOscope.h"
 #include "../devices/NskSlowAdc.h"
-#include "RequestEnumerator.h"
+#include "../devices/NskTimer.h"
 
 
 namespace Flug {
@@ -15,6 +14,7 @@ namespace Flug {
 		m_devmgr = new DeviceManager();
 		m_dispatcher = new Dispatcher();
 		m_monitor = new MonitorModule();
+		m_deviceBuilder = new DeviceBuilder();
 		m_devmgr->start();
 		m_monitor->start();
 	}
@@ -26,33 +26,33 @@ namespace Flug {
 	void Kernel::registerModules() {
 		m_dispatcher->registerModule("devmgr", m_devmgr);
 		m_dispatcher->registerModule("monitor", m_monitor);
-		registerDevice("DummyDevice", new DummyDevice());
-		registerDevice("AgilentOscope", new AgilentOscope());
-		registerDevice("NskSlowAdc", new NskSlowAdc());
 	}
 
-	void Kernel::registerDevice(const std::string &deviceName, DeviceDriver *device) {
-		if (!device) {
-			throw std::runtime_error("NULL module pointer");
+	void Kernel::registerDrivers() {
+		m_deviceBuilder->registerDeviceDriver<DummyDevice> ("DummyDevice");
+		m_deviceBuilder->registerDeviceDriver<AgilentOscope> ("AgilentOscope");
+		m_deviceBuilder->registerDeviceDriver<NskSlowAdc> ("NskSlowAdc");
+		m_deviceBuilder->registerDeviceDriver<NskTimer> ("NskTimer");
+	}
+
+	void Kernel::registerDevices() {
+		for (int i = 0; i < m_configuration["devices"].size(); i++) {
+			std::string devName = m_configuration["devices"][i]["device"].asString();
+			std::string drvName = m_configuration["devices"][i]["driver"].asString();
+
+			std::cout << "Starting \"" << drvName << "\" instance \"" << devName << "\"" << std::endl;
+
+			DeviceDriver * device = m_deviceBuilder->createDeviceInstance(drvName, devName);
+
+			if (!device) {
+				throw std::runtime_error("NULL module pointer");
+			}
+			device->loadConfig(m_configuration["devices"][i]["config"]);
+			device->start();
+			m_devmgr->registerDevice(devName, device);
+			m_dispatcher->registerModule(devName, device);
 		}
-		device->start();
-		m_devmgr->registerDevice(deviceName, device);
-		m_dispatcher->registerModule(deviceName, device);
 	}
-
-
-	void Kernel::dataToJsonArray(const char *data, size_t size, std::string &jsonArray) {
-		std::stringstream ss;
-		ss << "[";
-		for (size_t i = 0; i < size; i++) {
-			ss << (int16_t) data[i];
-			if (i != size - 1)
-				ss << ",";
-		}
-		ss << "]";
-		jsonArray = ss.str();
-	}
-
 
 	void Kernel::handlingProc() {
 		epoll_event evs[MaxEventsNo];
@@ -76,9 +76,6 @@ namespace Flug {
 												  "\"description\":\"Failed to dispatch message\"");
 
 					}
-					//std::string res;
-					//handleRequest(msg, res);
-					//pbuf->sendMessage(res);
 				} else {
 					//std::cout << "#No message" << std::endl;
 				}
@@ -97,7 +94,7 @@ namespace Flug {
 
 	void Kernel::main() {
 		std::thread handlingThread(&Kernel::handlingProc, this);
-		m_gateway.bind(m_gatewayPort);
+		m_gateway.bind(m_configuration["server"]["port"].asString());
 
 		for (; 1;) {
 			m_gateway.listen();
@@ -109,11 +106,6 @@ namespace Flug {
 	}
 
 	void Kernel::loadConfig(const std::string &confPath) {
-		/*Xml xml;
-		xml.loadData(confPath);
-		xml.get("/flugegeheimen/server/net@port", m_gatewayPort);
-		std::cout << "Starting Flugegeheimen on " << m_gatewayPort << std::endl;*/
-
 		std::ostringstream contents;
 		std::ifstream file(confPath);
 		if (!file.is_open()) {
@@ -123,11 +115,15 @@ namespace Flug {
 		std::string confStr = contents.str();
 
 		Json::Reader reader;
-		Json::Value config;
-		reader.parse(confStr, config);
-		m_gatewayPort = config["server"]["port"].asUInt();
-		std::cout << "Starting Flugegeheimen on " << m_gatewayPort << std::endl;
+		reader.parse(confStr, m_configuration);
+		std::cout << "Starting Flugegeheimen on " << m_configuration["server"]["port"].asString() << std::endl;
+	}
 
+	void Kernel::initialize(const std::string &configPath) {
+		registerDrivers();
+		loadConfig(configPath);
+		registerModules();
+		registerDevices();
 	}
 
 }

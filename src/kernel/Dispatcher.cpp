@@ -22,7 +22,7 @@ namespace Flug {
 		Json::Reader reader;
 		Json::Value root;
 		std::string modName;
-		Request * req = new Request(request, pbuf);
+		Request req(request, pbuf);
 
 		if (!reader.parse(request, root)) {
 			//send error message, cancel processing
@@ -31,7 +31,7 @@ namespace Flug {
 		modName = root["subsystem"].asString();
 
 		std::cout << "Module name: " << modName << std::endl;
-		if (!m_modules[modName].m_module->pushRequest(*req)) {
+		if (!m_modules[modName].m_module->pushRequest(req)) {
 			//send error "queue overflow" or "wrong request format"
 			return false;
 		}

@@ -10,15 +10,23 @@ namespace Flug {
 
 	class DeviceDriver : public Module {
 	public:
-		DeviceDriver ();
+		DeviceDriver () = delete;
+		DeviceDriver (const std::string & deviceInstance, const std::string & deviceType);
 		virtual ~DeviceDriver();
 
 
+		virtual bool loadConfig (Json::Value & config);
 		virtual bool initModule ();
 		virtual bool destroyModule ();
 		virtual bool handleRequest (Request & req, Response & resp);
 
+		const std::string & getDeviceName ();
+		const std::string & getDeviceType ();
+
 	protected:
+		std::string m_deviceName;
+		std::string m_deviceType;
+
 	private:
 	};
 

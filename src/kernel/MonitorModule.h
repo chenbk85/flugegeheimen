@@ -10,6 +10,10 @@
 namespace Flug {
 	class MonitorModule : public Module {
 	public:
+
+		MonitorModule ();
+		virtual ~MonitorModule();
+
 		virtual bool initModule ();
 		virtual bool destroyModule ();
 		virtual bool handleRequest (Request & req, Response & resp);

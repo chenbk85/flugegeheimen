@@ -17,7 +17,8 @@
 #define VAL_ALLOW_START 0x2
 
 namespace Flug {
-	NskSlowAdc::NskSlowAdc() {
+	NskSlowAdc::NskSlowAdc(const std::string & deviceInstanceName, const std::string & devType) :
+	DeviceDriver(deviceInstanceName, devType) {
 	}
 
 	NskSlowAdc::~NskSlowAdc() { }

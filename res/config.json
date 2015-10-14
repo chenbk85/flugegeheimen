@@ -1,5 +1,22 @@
 {
     "server":{
-        "port":2345
-    }
+        "port":"2345"
+    },
+    "devices":[
+        //{"device":"AgilentOscope","driver":"AgilentOscope"},
+        {"device":"Device1","driver":"DummyDevice"},
+        {"device":"Device2","driver":"DummyDevice"},
+        {"device":"Device3","driver":"DummyDevice"},
+        {"device":"Device4","driver":"DummyDevice"},
+        {"device":"Device5","driver":"DummyDevice"}
+        /*{"device":"Timer 1","driver":"NskTimer",
+            "config": {
+                "channelsNumber":8,
+                "delays": [10, 10, 10, 10, 10, 10, 10, 10],
+                "addr":"192.168.0.93",
+                "port":"2001"
+            }
+        }*/
+        //{"device":"Adc1","driver":"NskSlowAdc"}
+    ]
 }

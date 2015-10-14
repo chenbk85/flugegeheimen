@@ -8,7 +8,8 @@
 #define INFINIIUM_BUF_SIZE ((size_t)(1024 * 10))
 
 namespace Flug {
-	AgilentOscope::AgilentOscope() {
+	AgilentOscope::AgilentOscope(const std::string & deviceInstanceName, const std::string & devType) :
+	DeviceDriver (deviceInstanceName, devType) {
 		m_connected = false;
 	}
 
@@ -175,8 +176,8 @@ namespace Flug {
 
 		root["deviceType"] = "AgilentOscope";
 		if (idn != "") {
-			root["deviceName"] = "AgilentOscope";
-			root["deviceType"] = idn;
+			root["deviceName"] = m_deviceName;
+			root["deviceType"] = m_deviceType;
 			root["deviceStatus"] = "online";
 		} else {
 			root["deviceStatus"] = "offline";

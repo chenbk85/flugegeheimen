@@ -6,7 +6,8 @@
 #include "DeviceDriver.h"
 
 namespace Flug {
-	DeviceDriver::DeviceDriver() { }
+	DeviceDriver::DeviceDriver(const std::string & deviceInstance, const std::string & deviceType) :
+	Module(deviceInstance), m_deviceName(deviceInstance), m_deviceType(deviceType) { }
 
 	DeviceDriver::~DeviceDriver() { }
 
@@ -25,4 +26,17 @@ namespace Flug {
 	bool DeviceDriver::destroyModule() {
 		return true;
 	}
+
+	bool DeviceDriver::loadConfig(Json::Value &config) {
+		return true;
+	}
+
+	const std::string& DeviceDriver::getDeviceName() {
+		return m_deviceName;
+	}
+
+	const std::string& DeviceDriver::getDeviceType() {
+		return m_deviceType;
+	}
+
 }

@@ -6,6 +6,7 @@
 #include "DeviceManager.h"
 #include "DeviceDriver.h"
 #include "MonitorModule.h"
+#include "DeviceBuilder.h"
 
 namespace Flug {
 
@@ -18,29 +19,31 @@ namespace Flug {
 
 		void main();
 
-		void loadConfig(const std::string &confPath);
+		void initialize (const std::string & configPath);
+
+	protected:
+
 
 		void handlingProc();
 
 		void handleRequest(const std::string &req, std::string &res);
 
-		void dataToJsonArray(const char *data, size_t size, std::string &jsonArray);
-
+		void loadConfig(const std::string &confPath);
 		void registerModules();
+		void registerDrivers ();
+		void registerDevices ();
 
-		void registerDevice (const std::string & deviceName, DeviceDriver * device);
 
 
-	protected:
-
-		std::string m_gatewayPort;
+	private:
+		Json::Value m_configuration;
 		Socket m_gateway;
-
 		ConnectionPool m_pool;
 		Dispatcher * m_dispatcher;
 		DeviceManager * m_devmgr;
 		MonitorModule * m_monitor;
-	private:
+		DeviceBuilder * m_deviceBuilder;
+
 	};
 
 

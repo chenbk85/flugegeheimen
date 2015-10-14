@@ -6,6 +6,12 @@
 #include "MonitorModule.h"
 
 namespace Flug {
+
+	MonitorModule::MonitorModule() :
+	Module("MonitorModule") { }
+
+	MonitorModule::~MonitorModule() { }
+
 	bool MonitorModule::initModule() {
 		return true;
 	}

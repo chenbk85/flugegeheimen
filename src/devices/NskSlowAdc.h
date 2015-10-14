@@ -10,7 +10,8 @@
 namespace Flug {
 	class NskSlowAdc : public DeviceDriver {
 	public:
-		NskSlowAdc ();
+		NskSlowAdc () = delete;
+		NskSlowAdc (const std::string & deviceInstanceName, const std::string & devType);
 		virtual ~NskSlowAdc ();
 
 		virtual bool initModule ();

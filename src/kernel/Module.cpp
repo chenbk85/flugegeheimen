@@ -9,8 +9,8 @@
 #define MODULE_REQUEST_THROTTLING 10
 
 namespace Flug {
-	Module::Module() :
-	m_quitState(false){
+	Module::Module(const std::string & deviceInstanceName) :
+	m_quitState(false), Configurable(deviceInstanceName) {
 	}
 
 	void Module::start() {
@@ -43,7 +43,10 @@ namespace Flug {
 		Response response;
 		while (m_inQueue.pop(request)) {
 			if (!handleRequestWraper(request, response)) {
-				//handle error? yep. write to log.
+				Json::Value root;
+				root["staus"] = "error";
+				root["description"] = "Request handler returned false";
+				response = root;
 			}
 			m_outQueue.push(response);
 		}

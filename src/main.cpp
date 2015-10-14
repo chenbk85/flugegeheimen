@@ -14,8 +14,7 @@ int main(int argc, char **argv) {
 
 	if (argc < 2) {
 		Flug::Kernel kern;
-		kern.loadConfig("res/config.json");
-		kern.registerModules();
+		kern.initialize("res/config.json");
 		kern.main();
 	}
 

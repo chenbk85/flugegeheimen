@@ -9,7 +9,8 @@
 namespace Flug {
 	class DummyDevice : public DeviceDriver {
 	public:
-		DummyDevice();
+		DummyDevice() = delete;
+		DummyDevice(const std::string & deviceInstanceName, const std::string & devType);
 
 		virtual ~DummyDevice();
 

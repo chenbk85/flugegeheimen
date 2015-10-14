@@ -10,7 +10,8 @@
 namespace Flug {
 	class AgilentOscope : public DeviceDriver {
 	public:
-		AgilentOscope ();
+		AgilentOscope () = delete;
+		AgilentOscope (const std::string & deviceInstanceName, const std::string & devType);
 		virtual ~AgilentOscope();
 
 

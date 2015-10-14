@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 2.6)
 set (FLUG_SOURCES src/main.cpp src/kernel/kernel.cpp src/helpers/socket.cpp src/helpers/xml.cpp
 src/kernel/request_builder.cpp src/kernel/response_parser.cpp
 src/devices/timer.cpp src/devices/adc.cpp src/helpers/binres.cpp
-src/kernel/pool.cpp src/kernel/PollingBuffer.cpp src/devices/DummyDevice.cpp src/kernel/Dispatcher.cpp src/kernel/Dispatcher.h src/kernel/DeviceManager.cpp src/kernel/DeviceManager.h src/kernel/Module.cpp src/kernel/Module.h src/kernel/DeviceDriver.cpp src/kernel/DeviceDriver.h src/kernel/RequestEnumerator.cpp src/kernel/RequestEnumerator.h src/kernel/Request.h src/kernel/Response.h src/devices/AgilentOscope.cpp src/devices/AgilentOscope.h src/kernel/MonitorModule.cpp src/kernel/MonitorModule.h src/devices/NskSlowAdc.cpp src/devices/NskSlowAdc.h src/kernel/BinBuilder.cpp src/kernel/BinBuilder.h)
+src/kernel/pool.cpp src/kernel/PollingBuffer.cpp src/devices/DummyDevice.cpp src/kernel/Dispatcher.cpp src/kernel/Dispatcher.h src/kernel/DeviceManager.cpp src/kernel/DeviceManager.h src/kernel/Module.cpp src/kernel/Module.h src/kernel/DeviceDriver.cpp src/kernel/DeviceDriver.h src/kernel/RequestEnumerator.cpp src/kernel/RequestEnumerator.h src/kernel/Request.h src/kernel/Response.h src/devices/AgilentOscope.cpp src/devices/AgilentOscope.h src/kernel/MonitorModule.cpp src/kernel/MonitorModule.h src/devices/NskSlowAdc.cpp src/devices/NskSlowAdc.h src/kernel/BinBuilder.cpp src/kernel/BinBuilder.h src/kernel/Configurable.cpp src/kernel/Configurable.h src/kernel/DeviceBuilder.h src/devices/NskTimer.cpp src/devices/NskTimer.h)
 
 list( APPEND CMAKE_CXX_FLAGS "-std=c++11 ${CMAKE_CXX_FLAGS} -g -ftest-coverage -fprofile-arcs -pthread")
 
@@ -12,11 +12,11 @@ find_package(Boost REQUIRED)
 ADD_SUBDIRECTORY (gtest)
 enable_testing()
 include_directories(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR}
-        ${Boost_INCLUDE_DIR} /usr/include/jsoncpp/)
+        ${Boost_INCLUDE_DIR} /usr/include/jsoncpp/ -I/usr/include/mongo-client -I/usr/include/glib-2.0)
 
 add_executable (flugegeheimen ${FLUG_SOURCES})
 
-target_link_libraries(flugegeheimen ${Boost_LIBRARIES} -ljsoncpp)
+target_link_libraries(flugegeheimen ${Boost_LIBRARIES} -ljsoncpp -lmongo-client)
 
 add_executable(flugegeheimen-unit-test src/test.cpp
 src/helpers/xml.cpp src/helpers/xml_test.cpp

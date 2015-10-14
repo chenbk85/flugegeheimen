@@ -7,7 +7,8 @@
 
 
 namespace Flug {
-	DummyDevice::DummyDevice() {
+	DummyDevice::DummyDevice(const std::string & deviceInstanceName, const std::string & devType) :
+	DeviceDriver(deviceInstanceName, devType) {
 	}
 
 	DummyDevice::~DummyDevice() {
