@@ -9,14 +9,12 @@
 namespace Flug {
     class Configurable {
     public:
-        void getConfigTag (std::string & str);
     protected:
         Configurable() = delete;
 
         Configurable(const std::string &name);
         virtual ~Configurable();
 
-        Json::Value & getConfig ();
 
         Json::Value m_configuration;
 

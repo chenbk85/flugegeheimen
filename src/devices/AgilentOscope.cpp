@@ -318,4 +318,8 @@ namespace Flug {
 	}
 
 
+	bool AgilentOscope::loadConfig(Json::Value & config) {
+
+		return true;
+	}
 }

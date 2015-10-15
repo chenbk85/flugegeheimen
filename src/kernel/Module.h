@@ -39,4 +39,3 @@ namespace Flug {
 	private:
 	};
 }
-

@@ -18,6 +18,7 @@ namespace Flug {
 		virtual bool initModule ();
 		virtual bool destroyModule ();
 		virtual bool handleRequest (Request & req, Response & resp);
+		virtual bool loadConfig (Json::Value & config);
 
 	protected:
 		Socket m_sock;

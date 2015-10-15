@@ -4,6 +4,8 @@
 
 #include "../stdafx.h"
 #include "NskTimer.h"
+#include "../kernel/request_builder.h"
+#include "../kernel/response_parser.h"
 
 
 namespace Flug {
@@ -31,6 +33,7 @@ namespace Flug {
     bool NskTimer::initModule() {
         m_sock.connect(m_addr, m_port);
         m_connected = true;
+        pushDelays();
     }
 
     bool NskTimer::destroyModule() {
@@ -41,8 +44,10 @@ namespace Flug {
         std::string reqtype = req.m_json["reqtype"].asString();
         if (reqtype == "getDeviceInfo") {
             return handleIsOnline (req, resp);
-        } else if (reqtype == "getChannelsDelays") {
-            return handleGetChannelsDelays(req, resp);
+        } else if (reqtype == "loadDelays") {
+            return handleLoadDelays(req, resp);
+        } else if (reqtype == "updateDelays") {
+            return handleUpdateDelays(req, resp);
         }
         return false;
     }
@@ -61,11 +66,7 @@ namespace Flug {
         return true;
     }
 
-    bool NskTimer::handleSetChannelDelay(Flug::Request &req, Flug::Response &resp) {
-        return false;
-    }
-
-    bool NskTimer::handleGetChannelsDelays(Flug::Request &req, Flug::Response &resp) {
+    bool NskTimer::handleLoadDelays(Flug::Request &req, Flug::Response &resp) {
         Json::Value root;
         root["status"] = "success";
         for (int i = 0; i < m_delays.size(); i++) {
@@ -73,5 +74,42 @@ namespace Flug {
         }
         resp = root;
         return true;
+    }
+
+    bool NskTimer::handleUpdateDelays(Flug::Request &req, Flug::Response &resp) {
+        Json::Value root;
+        root["status"] = "success";
+        for (int i = 0; i < m_delays.size(); i++) {
+            m_delays[i] = req.m_json["delays"][i].asUInt();
+        }
+        pushDelays();
+        resp = root;
+        return true;
+    }
+
+    void NskTimer::setChannelDelay(uint8_t chanNo, uint16_t delay) {
+        Flug::RequestBuilder req;
+        Flug::ResponseParser res;
+
+        req << ((uint8_t) 0x80) << ((uint8_t) chanNo) << ((uint8_t) 0x2) << ((uint16_t) delay);
+        m_sock.send(req.data(), req.size());
+
+        char buf[4];
+        uint8_t numReg, cmd;
+        uint16_t val;
+
+        m_sock.recv(buf, 4);
+        res.setData(buf, 4);
+        res >> numReg >> cmd >> val;
+    }
+
+    void NskTimer::pushDelays() {
+        for (uint8_t chNo = 0; chNo < m_channelsNumber; chNo++) {
+            setChannelDelay(chNo, m_delays[chNo]);
+        }
+    }
+
+    void NskTimer::popDelays() {
+        throw std::runtime_error("Not implmented");
     }
 }

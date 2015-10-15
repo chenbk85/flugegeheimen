@@ -13,12 +13,4 @@ namespace Flug {
 
     Configurable::~Configurable() {
     }
-
-    void Configurable::getConfigTag(std::string &str) {
-        str = m_configTag;
-    }
-
-    Json::Value& Configurable::getConfig() {
-        return m_configuration;
-    }
 }
