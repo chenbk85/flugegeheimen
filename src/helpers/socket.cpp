@@ -126,7 +126,7 @@ namespace Flug {
 		}
 	}
 
-	size_t Socket::send(const char *data, size_t size) {
+	size_t Socket::send(const uint8_t *data, size_t size) {
 		if (m_sock == -1) {
 			throw std::runtime_error("Failed to send: not connected");
 		}
@@ -138,7 +138,7 @@ namespace Flug {
 		return (size_t) ret;
 	}
 
-	size_t Socket::recv(char *data, size_t size) {
+	size_t Socket::recv(uint8_t *data, size_t size) {
 		if (m_sock == -1) {
 			throw std::runtime_error("Failed to recv: not connected");
 		}
@@ -150,18 +150,32 @@ namespace Flug {
 		return (size_t) ret;
 	}
 
-	void Socket::sendData (const char * data, size_t size) {
+
+	void LogBinarySocket (const uint8_t * data, size_t size) {
+		printf("%4lu: ", size);
+		for (size_t i = 0; i < size; i++) {
+			printf("0x%02x ", data[i]);
+		}
+		std::cout << std::endl;
+	}
+
+
+	void Socket::sendData (const uint8_t* data, size_t size) {
 		size_t chunk = 0;
+		//std::cout << "<--";
+		//LogBinarySocket(data, size);
 		for (size_t sent = 0; sent < size; sent += chunk) {
 			chunk = send(data + sent, size - sent);
 		}
 	}
 
-	void Socket::recvData (char * data, size_t size) {
+	void Socket::recvData (uint8_t* data, size_t size) {
 		size_t chunk = 0;
 		for (size_t sent = 0; sent < size; sent += chunk) {
 			chunk = recv(data + sent, size - sent);
 		}
+		//std::cout << "-->";
+		//LogBinarySocket(data, size);
 	}
 
 	void Socket::sendString (const std::string & str) {
@@ -170,8 +184,8 @@ namespace Flug {
 		}
 
 		uint32_t strLen = str.size();
-		sendData(reinterpret_cast<const char*>(&strLen), sizeof(strLen));
-		sendData(str.c_str(), (size_t)strLen);
+		sendData(reinterpret_cast<const uint8_t*>(&strLen), sizeof(strLen));
+		sendData(reinterpret_cast<const uint8_t*>(str.c_str()), (size_t)strLen);
 	}
 
 	void Socket::recvString (std::string & str) {
@@ -179,14 +193,14 @@ namespace Flug {
 			throw std::runtime_error ("Invalid socket");
 		}
 		uint32_t strLen;
-		recvData (reinterpret_cast<char*>(&strLen), sizeof(strLen));
+		recvData (reinterpret_cast<uint8_t*>(&strLen), sizeof(strLen));
 		std::vector<char> tmpStore((size_t)strLen);
-		recvData (tmpStore.data(), (size_t)strLen);
+		recvData (reinterpret_cast<uint8_t*>(tmpStore.data()), (size_t)strLen);
 		str.assign(tmpStore.begin(), tmpStore.end());
 	}
 
 	void Socket::sendLine(const std::string &str) {
-		sendData((str + "\n").c_str(), str.length() + 1);
+		sendData(reinterpret_cast<const uint8_t*>((str + "\n").c_str()), str.length() + 1);
 	}
 
 	void Socket::recvLine(std::string &str) {
@@ -195,7 +209,7 @@ namespace Flug {
 		str.clear();
 
 		while (!newlineOcured) {
-			recv(buf, DEFAULT_NET_BUF);
+			recv(reinterpret_cast<uint8_t*>(buf), DEFAULT_NET_BUF);
 			char * ptr;
 			if ((ptr = strstr(buf, "\n")) != NULL) {
 				newlineOcured = true;
@@ -211,7 +225,7 @@ namespace Flug {
 		return m_sock;
 	}
 
-	bool Socket::recvNonblock(char *data, size_t size, size_t &recvd) {
+	bool Socket::recvNonblock(uint8_t *data, size_t size, size_t &recvd) {
 		ssize_t ret = ::recv(m_sock, data, size, 0);
 		if (ret == -1) {
 			recvd = 0;
@@ -225,7 +239,7 @@ namespace Flug {
 
 	}
 
-	bool Socket::sendNonblock(const char *data, size_t size, size_t &sent) {
+	bool Socket::sendNonblock(const uint8_t *data, size_t size, size_t &sent) {
 
 		ssize_t ret = ::send(m_sock, data, size, 0);
 		if (ret == -1) {

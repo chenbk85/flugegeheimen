@@ -94,7 +94,7 @@ namespace Flug {
         req << ((uint8_t) 0x80) << ((uint8_t) chanNo) << ((uint8_t) 0x2) << ((uint16_t) delay);
         m_sock.send(req.data(), req.size());
 
-        char buf[4];
+        uint8_t buf[4];
         uint8_t numReg, cmd;
         uint16_t val;
 

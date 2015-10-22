@@ -21,8 +21,8 @@ namespace Flug {
 		return m_data.size();
 	}
 
-	const char * BinRes::data () const {
-		return reinterpret_cast<const char *>(m_data.data());
+	const uint8_t* BinRes::data () const {
+		return m_data.data();
 	}
 	
 }

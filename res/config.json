@@ -6,28 +6,28 @@
         {"device":"Device1","driver":"DummyDevice"},
         {"device":"Device2","driver":"DummyDevice"},
         {"device":"Device3","driver":"DummyDevice"},
-        {"device":"Device4","driver":"DummyDevice"},
-        {"device":"Device5","driver":"DummyDevice"},
         {"device":"MSO9254A","driver":"AgilentOscope",
             "config": {
                 "addr":"172.16.13.238",
                 "port":"5025"
             }
         },
-        /*{"device":"Timer1","driver":"NskTimer",
+        {"device":"Timer1","driver":"NskTimer",
             "config": {
                 "channelsNumber":8,
                 "delays": [10, 10, 10, 10, 10, 10, 10, 10],
                 "addr":"192.168.0.93",
                 "port":"2001"
             }
-        }*/
-        {"device":"Adc1","driver":"NskSlowAdc",
+        },
+        {"device":"SlowAdc","driver":"NskSlowAdc",
             "config": {
-                "addr": "192.168.0.110",
-                "controlPort": "2000",
-                "infoPort": "2001",
-                "adcPort": "2002"
+                "addr": "192.168.0.114",
+                "controlPort": "2001",
+                "infoPort": "2000",
+                "dacPort": "2002",
+                "firmware": "res/SlowAdcFirmware.bin",
+                "highVoltage": true
             }
         }
     ]

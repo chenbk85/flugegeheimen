@@ -42,7 +42,7 @@ namespace Flug {
 		Socket sock(m_socket);
 		bool ret = true;
 		while (ret) {
-			ret = sock.recvNonblock(buf, BufSize, recvd);
+			ret = sock.recvNonblock(reinterpret_cast<uint8_t*>(buf), BufSize, recvd);
 			if (ret) {
 				if (!recvd) {
 					std::cout << "#Disconnected (read)" << std::endl;
@@ -70,7 +70,7 @@ namespace Flug {
 				return;
 			}
 
-			ret = sock.sendNonblock(m_outputData.data(), m_outputData.size(), sent);
+			ret = sock.sendNonblock(reinterpret_cast<uint8_t*>(m_outputData.data()), m_outputData.size(), sent);
 			std::cout << "Send: ret=" << ret << " sent=" << sent << std::endl;
 			if (ret) {
 				if (!sent) {

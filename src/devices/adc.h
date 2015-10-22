@@ -36,7 +36,7 @@ namespace Flug {
 			void setOffset (uint16_t offset);
 			void setPagesNumber (uint16_t pages);
 
-			void readPage (char * buf);
+			void readPage (uint8_t * buf);
 
 		protected:
 			std::string m_addr;

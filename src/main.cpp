@@ -4,10 +4,6 @@
 #include "kernel/request_builder.h"
 #include "kernel/response_parser.h"
 #include "helpers/socket.h"
-#include "helpers/xml.h"
-#include "devices/timer.h"
-#include "devices/adc.h"
-#include "timer.h"
 
 
 int main(int argc, char **argv) {

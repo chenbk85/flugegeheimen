@@ -2,8 +2,8 @@
 #include "response_parser.h"
 
 namespace Flug {
-	ResponseParser::ResponseParser(const char *data, size_t size) :
-			m_data(reinterpret_cast<const uint8_t *>(data)), m_size(size), m_offset(0) {
+	ResponseParser::ResponseParser(const uint8_t*data, size_t size) :
+			m_data(data), m_size(size), m_offset(0) {
 
 	};
 
@@ -20,8 +20,8 @@ namespace Flug {
 		m_offset = 0;
 	};
 
-	void ResponseParser::setData(const char *data, size_t size) {
-		m_data = reinterpret_cast<const uint8_t *>(data);
+	void ResponseParser::setData(const uint8_t*data, size_t size) {
+		m_data = data;
 		m_size = size;
 		m_offset = 0;
 	};

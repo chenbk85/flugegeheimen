@@ -21,7 +21,7 @@ namespace Flug {
 	static void senderThread(const std::string &host, const std::string &port, const char * data, size_t size) {
 		Socket sock;
 		sock.connect(host, port);
-		sock.send(data, size);
+		sock.send(reinterpret_cast<const uint8_t*>(data), size);
 		sock.disconnect();
 	}
 
@@ -50,7 +50,7 @@ namespace Flug {
 		int sockfd;
 		EXPECT_NO_THROW(sockfd = sock.accept());
 		Socket reciever(sockfd);
-		EXPECT_NO_THROW(reciever.recv(rbuf, 16));
+		EXPECT_NO_THROW(reciever.recv(reinterpret_cast<uint8_t *>(rbuf), 16));
 		EXPECT_EQ(memcmp(buf, rbuf, 16), 0);
 		thrd.join();
 		sock.disconnect();

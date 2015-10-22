@@ -30,13 +30,13 @@ namespace Flug {
 
 		void disconnect();
 
-		size_t send(const char *data, size_t size);
+		size_t send(const uint8_t *data, size_t size);
 
-		size_t recv(char *data, size_t size);
+		size_t recv(uint8_t *data, size_t size);
 
-		void sendData (const char *data, size_t size);
+		void sendData (const uint8_t *data, size_t size);
 
-		void recvData (char * data, size_t size);
+		void recvData (uint8_t * data, size_t size);
 
 		void sendString (const std::string & str);
 
@@ -45,9 +45,9 @@ namespace Flug {
 		void sendLine (const std::string & str);
 		void recvLine (std::string & str);
 
-		bool sendNonblock (const char * data, size_t size, size_t & sent);
+		bool sendNonblock (const uint8_t * data, size_t size, size_t & sent);
 
-		bool recvNonblock (char * data, size_t size, size_t & recvd);
+		bool recvNonblock (uint8_t * data, size_t size, size_t & recvd);
 
 	protected:
 		int m_sock;

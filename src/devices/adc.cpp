@@ -28,7 +28,7 @@ namespace Flug {
 		}
 
 		void Adc::initDevice() {
-			char buf[ADC_PAGE_SIZE];
+			uint8_t buf[ADC_PAGE_SIZE];
 			loadFirmware();
 			clearRegisters();
 			initPll();
@@ -41,7 +41,7 @@ namespace Flug {
 		void Adc::loadFirmware() {
 			Flug::RequestBuilder req;
 			Flug::ResponseParser res;
-			char buf[1024];
+			uint8_t buf[1024];
 			m_firmware.load(m_firmwarePath);
 			uint32_t fwSize = m_firmware.size();
 			req.flush();
@@ -92,7 +92,7 @@ namespace Flug {
 		uint16_t Adc::getRegister (Register reg) {
 			RequestBuilder req;
 			ResponseParser res;
-			char buf[1024];
+			uint8_t buf[1024];
 			uint8_t cmd, numReg;
 			uint16_t val;
 
@@ -111,7 +111,7 @@ namespace Flug {
 		void Adc::setRegister (Register reg, RegOperstion regOp, uint8_t valLo, uint8_t valHi) {
 			RequestBuilder req;
 			ResponseParser res;
-			char buf[1024];
+			uint8_t buf[1024];
 			uint8_t cmd, numReg;
 			uint16_t val;
 
@@ -125,7 +125,7 @@ namespace Flug {
 		void Adc::setRegister (Register reg, RegOperstion regOp, uint16_t val) {
 			RequestBuilder req;
 			ResponseParser res;
-			char buf[1024];
+			uint8_t buf[1024];
 			uint8_t cmd, numReg;
 			uint16_t rval;
 
@@ -145,7 +145,7 @@ namespace Flug {
 			m_dataSocket.disconnect();
 		}
 
-		void Adc::readPage(char *buf) {
+		void Adc::readPage(uint8_t *buf) {
 			RequestBuilder req;
 			req << ((uint8_t)0x10);
 			m_dataSocket.sendData(req.data(), req.size());

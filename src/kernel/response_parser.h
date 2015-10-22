@@ -5,7 +5,7 @@ namespace Flug {
 
 	class ResponseParser {
 	public:
-		ResponseParser(const char *data, size_t size);
+		ResponseParser(const uint8_t*data, size_t size);
 
 		ResponseParser();
 
@@ -24,7 +24,7 @@ namespace Flug {
 
 		void flush();
 
-		void setData(const char *data, size_t size);
+		void setData(const uint8_t *data, size_t size);
 
 	protected:
 		const uint8_t *m_data;

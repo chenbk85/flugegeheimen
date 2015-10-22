@@ -12,7 +12,7 @@ void ConnectorThreadProc (const std::string & addr, const std::string & port) {
 void SenderThreadProc (const std::string & addr, const std::string & port) {
 	Flug::Socket sock;
 	EXPECT_NO_THROW(sock.connect (addr, port));
-	EXPECT_NO_THROW(sock.send("abcd", 4));
+	EXPECT_NO_THROW(sock.send(reinterpret_cast<const uint8_t *>("abcd"), 4));
 	sock.disconnect();
 }
 

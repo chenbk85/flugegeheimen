@@ -61,12 +61,12 @@ static void runTimerProc () {
 		int chanDelay;
 		config.get("/flugegeheimen/timer/channel_" + chanNo + "@delay", chanDelay);
 
-		char res[4];
+		uint8_t res[4];
 		req.flush();
 		req << ((uint8_t) 0x80) << ((uint8_t) i) << ((uint8_t) 0x2) << ((uint16_t) chanDelay);
 		sock.send(req.data(), req.size());
 
-		sock.recv(reinterpret_cast<char *>(&res), sizeof(res));
+		sock.recv(res, sizeof(res));
 		Flug::ResponseParser rparse(res, 4);
 		uint8_t numReg, cmd;
 		uint16_t val;
@@ -120,7 +120,7 @@ static void runCrateCalibrationCheck () {
 		adc.initDevice();
 
 		std::cout << " reading data.. ";
-		adc.readPage(reinterpret_cast<char*>(buf));
+		adc.readPage(reinterpret_cast<uint8_t*>(buf));
 		ss << i;
 		ss >> sno;
 		std::ofstream file;
@@ -159,7 +159,7 @@ static void runCrateCalibrationCheckFast () {
 		adc.connect();
 
 		std::cout << " reading data.. ";
-		adc.readPage(reinterpret_cast<char*>(buf));
+		adc.readPage(reinterpret_cast<uint8_t*>(buf));
 		ss << i;
 		ss >> sno;
 		std::ofstream file;
@@ -202,7 +202,7 @@ static void runCrateCheck () {
 		std::cout << " reading data.. ";
 		adc.setPagesNumber(1024);
 		adc.allowStart();
-		adc.readPage(reinterpret_cast<char*>(buf));
+		adc.readPage(reinterpret_cast<uint8_t*>(buf));
 
 		ss << i;
 		ss >> sno;
@@ -243,7 +243,7 @@ static void runCrateCheckFast () {
 		std::cout << " reading data.. ";
 		adc.setPagesNumber(1024);
 		adc.allowStart();
-		adc.readPage(reinterpret_cast<char*>(buf));
+		adc.readPage(reinterpret_cast<uint8_t*>(buf));
 
 		ss << i;
 		ss >> sno;

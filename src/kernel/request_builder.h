@@ -6,7 +6,7 @@ namespace Flug {
 
 		RequestBuilder();
 		virtual ~RequestBuilder();
-		const char * data() const;
+		const uint8_t * data() const;
 		size_t size() const;
 		void flush ();
 
@@ -18,7 +18,7 @@ namespace Flug {
 			return *this;
 		};
 
-		RequestBuilder &push (const char * data, size_t size);
+		RequestBuilder &push (const uint8_t * data, size_t size);
 
 
 	protected:

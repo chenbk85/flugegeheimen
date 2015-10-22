@@ -8,9 +8,9 @@ namespace Flug {
 
 		void load (const std::string & path);
 
-		const char * data () const;
+		const uint8_t * data () const;
 		size_t size () const;
 	protected:
-		std::vector<char> m_data;
+		std::vector<uint8_t> m_data;
 	};
 }

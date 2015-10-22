@@ -292,11 +292,11 @@ namespace Flug {
 	}
 
 	void AgilentOscope::getWordData(std::vector<int16_t> &data) {
-		char buf[INFINIIUM_BUF_SIZE];
+		uint8_t buf[INFINIIUM_BUF_SIZE];
 
 		size_t dataStart;
 		size_t recieved = m_sock.recv(buf, INFINIIUM_BUF_SIZE);
-		size_t dataLength = parseWordRespHeader(buf, dataStart);
+		size_t dataLength = parseWordRespHeader(reinterpret_cast<const char *>(buf), dataStart);
 		size_t fullLength = dataStart + dataLength + 1;
 
 		data.clear();
@@ -305,7 +305,7 @@ namespace Flug {
 		dataBuf.assign(buf + dataStart, buf + recieved);
 
 		while (recieved < fullLength) {
-			size_t ret = m_sock.recv(dataBuf.data() + recieved - dataStart,
+			size_t ret = m_sock.recv(reinterpret_cast<uint8_t*>(dataBuf.data() + recieved - dataStart),
 									 fullLength - recieved);
 			recieved += ret;
 		}
