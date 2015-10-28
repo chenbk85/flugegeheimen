@@ -13,4 +13,8 @@ namespace Flug {
 
     Configurable::~Configurable() {
     }
+
+    const std::string& Configurable::getConfigTag() {
+        return m_configTag;
+    }
 }

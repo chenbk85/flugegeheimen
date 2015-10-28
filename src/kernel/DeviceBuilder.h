@@ -28,6 +28,9 @@ namespace Flug {
     class DeviceBuilder {
     public:
         DeviceDriver * createDeviceInstance (const std::string & driverName, const std::string & instanceName) {
+            if (m_drivers.find(driverName) == m_drivers.end()) {
+                throw std::runtime_error("Shit! Driver \"" + driverName + "\" not found");
+            }
             return m_drivers[driverName]->createInstance(instanceName, driverName);
         };
 

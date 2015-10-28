@@ -4,6 +4,7 @@
 #include "../devices/AgilentOscope.h"
 #include "../devices/NskSlowAdc.h"
 #include "../devices/NskTimer.h"
+#include "../devices/NskFastAdc.h"
 
 
 namespace Flug {
@@ -32,6 +33,7 @@ namespace Flug {
 		m_deviceBuilder->registerDeviceDriver<DummyDevice> ("DummyDevice");
 		m_deviceBuilder->registerDeviceDriver<AgilentOscope> ("AgilentOscope");
 		m_deviceBuilder->registerDeviceDriver<NskSlowAdc> ("NskSlowAdc");
+		m_deviceBuilder->registerDeviceDriver<NskFastAdc>("NskFastAdc");
 		m_deviceBuilder->registerDeviceDriver<NskTimer> ("NskTimer");
 	}
 

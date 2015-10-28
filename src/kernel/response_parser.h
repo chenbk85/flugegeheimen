@@ -26,6 +26,14 @@ namespace Flug {
 
 		void setData(const uint8_t *data, size_t size);
 
+		size_t size() {
+			return m_size;
+		};
+
+		const uint8_t * data() {
+			return m_data;
+		};
+
 	protected:
 		const uint8_t *m_data;
 		size_t m_size;

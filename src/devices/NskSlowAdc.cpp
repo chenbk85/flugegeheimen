@@ -22,7 +22,7 @@
 #define VAL_UNKNOWN_1 0x1
 
 #define READ_DATA_COMMAND 0x10
-#define READ_DATA_PAGE_SIZE 0x400
+#define DATA_PAGE_SIZE 0x400
 #define DATA_SERIES_LENGTH 0x400
 
 #define CHANNELS_COUNT 8
@@ -235,7 +235,7 @@ namespace Flug {
     void NskSlowAdc::readDataPage(uint16_t *data) {
         uint8_t readCmd = READ_DATA_COMMAND;
         m_infoSock.sendData(reinterpret_cast<const uint8_t *>(&readCmd), 0x1);
-        m_infoSock.recvData(reinterpret_cast<uint8_t *>(data), READ_DATA_PAGE_SIZE);
+        m_infoSock.recvData(reinterpret_cast<uint8_t *>(data), DATA_PAGE_SIZE);
 
     }
 
@@ -243,7 +243,7 @@ namespace Flug {
         std::vector<uint16_t> tmpData(CHANNELS_COUNT * DATA_SERIES_LENGTH);
 
         for (int i = 0; i < 0x10; i++) {
-            readDataPage(tmpData.data() + READ_DATA_PAGE_SIZE / sizeof(int16_t) * i);
+            readDataPage(tmpData.data() + DATA_PAGE_SIZE / sizeof(int16_t) * i);
         }
 
         for (int chan = 0; chan < CHANNELS_COUNT; chan++) {
@@ -282,6 +282,7 @@ namespace Flug {
         Json::Value root;
         root["status"] = "success";
 
+        setPagesCount(0);
         DO_THE_MAGIC_BITCH();
         readDataPages();
 
@@ -303,6 +304,7 @@ namespace Flug {
         performCommand(m_controlSock, Cmd(REG_COMMAND, VAL_ALLOW_START), resp);
         performCommand(m_controlSock, Cmd(REG_COMMAND, VAL_MAGIC_COMMAND), resp);
         performCommand(m_controlSock, Cmd(REG_COMMAND, VAL_MAGIC_COMMAND), resp);
+        sleep(2);
         performCommand(m_controlSock, Cmd(REG_UNKNOWN_6, VAL_UNKNOWN_1), resp);
         performCommand(m_controlSock, Cmd(REG_UNKNOWN_6, VAL_UNKNOWN_1), resp);
         performCommand(m_controlSock, Cmd(REG_COMMAND, VAL_ALLOW_READ), resp);

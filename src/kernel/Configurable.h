@@ -18,6 +18,8 @@ namespace Flug {
 
         Json::Value m_configuration;
 
+        const std::string & getConfigTag ();
+
     private:
         std::string m_configTag;
     };

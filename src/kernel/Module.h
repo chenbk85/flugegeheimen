@@ -32,8 +32,14 @@ namespace Flug {
 		void handleIncomingRequests ();
 
 		bool m_quitState;
+
 		boost::lockfree::spsc_queue<Request, boost::lockfree::capacity<1024> > m_inQueue;
+		std::atomic<uint32_t> m_inQueueCounter;
+		std::condition_variable m_inQueueCv;
+		std::mutex m_inQueueMutex;
+
 		boost::lockfree::spsc_queue<Response, boost::lockfree::capacity<1024> > m_outQueue;
+		std::atomic<uint32_t> m_outQueueCounter;
 
 		std::thread * m_thread;
 	private:

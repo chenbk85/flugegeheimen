@@ -9,7 +9,7 @@ src/kernel/pool.cpp src/kernel/PollingBuffer.cpp src/devices/DummyDevice.cpp
         src/kernel/Response.h src/devices/AgilentOscope.cpp src/devices/AgilentOscope.h
         src/kernel/MonitorModule.cpp src/kernel/MonitorModule.h src/devices/NskSlowAdc.cpp src/devices/NskSlowAdc.h
         src/kernel/BinBuilder.cpp src/kernel/BinBuilder.h src/kernel/Configurable.cpp src/kernel/Configurable.h
-        src/kernel/DeviceBuilder.h src/devices/NskTimer.cpp src/devices/NskTimer.h)
+        src/kernel/DeviceBuilder.h src/devices/NskTimer.cpp src/devices/NskTimer.h src/devices/NskFastAdc.cpp src/devices/NskFastAdc.h src/kernel/DeviceHypervisor.cpp src/kernel/DeviceHypervisor.h)
 
 list( APPEND CMAKE_CXX_FLAGS "-std=c++11 ${CMAKE_CXX_FLAGS} -g -ftest-coverage -fprofile-arcs -pthread")
 

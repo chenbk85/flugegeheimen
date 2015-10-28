@@ -3,9 +3,7 @@
         "port":"2345"
     },
     "devices":[
-        {"device":"Device1","driver":"DummyDevice"},
-        {"device":"Device2","driver":"DummyDevice"},
-        {"device":"Device3","driver":"DummyDevice"},
+        {"device":"TrashyDevice","driver":"DummyDevice"},
         {"device":"MSO9254A","driver":"AgilentOscope",
             "config": {
                 "addr":"172.16.13.238",
@@ -20,7 +18,7 @@
                 "port":"2001"
             }
         },
-        {"device":"SlowAdc","driver":"NskSlowAdc",
+        /*{"device":"SlowAdc","driver":"NskSlowAdc",
             "config": {
                 "addr": "192.168.0.114",
                 "controlPort": "2001",
@@ -28,6 +26,30 @@
                 "dacPort": "2002",
                 "firmware": "res/SlowAdcFirmware.bin",
                 "highVoltage": true
+            }
+        },*/
+        {"device":"FastAdc44","driver":"NskFastAdc",
+            "config": {
+                "addr": "192.168.0.44",
+                "controlPort": "2001",
+                "infoPort": "2000",
+                "firmware": "res/FastAdcFirmware.bin"
+            }
+        },
+        {"device":"FastAdc45","driver":"NskFastAdc",
+            "config": {
+                "addr": "192.168.0.45",
+                "controlPort": "2001",
+                "infoPort": "2000",
+                "firmware": "res/FastAdcFirmware.bin"
+            }
+        },
+        {"device":"FastAdc46","driver":"NskFastAdc",
+            "config": {
+                "addr": "192.168.0.46",
+                "controlPort": "2001",
+                "infoPort": "2000",
+                "firmware": "res/FastAdcFirmware.bin"
             }
         }
     ]
