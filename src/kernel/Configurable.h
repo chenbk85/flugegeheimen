@@ -13,8 +13,8 @@ namespace Flug {
         Configurable() = delete;
 
         Configurable(const std::string &name);
-        virtual ~Configurable();
 
+        virtual ~Configurable();
 
         Json::Value m_configuration;
 

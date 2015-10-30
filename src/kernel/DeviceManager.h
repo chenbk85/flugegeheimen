@@ -25,6 +25,8 @@ namespace Flug {
 
 		bool initDevices (Dispatcher * dispatcher, Json::Value & devList);
 
+        void getDevicesList (std::list<std::pair<std::string, std::string> > & devices);
+
 	protected:
 
 		bool handleGetDeviceTypesList (Request & req, Response & resp);

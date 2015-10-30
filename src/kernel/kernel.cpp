@@ -11,13 +11,17 @@ namespace Flug {
 
 	static const int MaxEventsNo = 10;
 
-	Kernel::Kernel() {
+	Kernel::Kernel() :
+    m_archBackend(new InterlockedArchiveBackend()) {
 		m_devmgr = new DeviceManager();
 		m_dispatcher = new Dispatcher();
 		m_monitor = new MonitorModule();
 		m_deviceBuilder = new DeviceBuilder();
+		m_archive = new ArchiveModule(m_archBackend);
+
 		m_devmgr->start();
 		m_monitor->start();
+		m_archive->start();
 	}
 
 	Kernel::~Kernel() {
@@ -27,6 +31,7 @@ namespace Flug {
 	void Kernel::registerModules() {
 		m_dispatcher->registerModule("devmgr", m_devmgr);
 		m_dispatcher->registerModule("monitor", m_monitor);
+        m_dispatcher->registerModule("database", m_archive);
 	}
 
 	void Kernel::registerDrivers() {
@@ -53,6 +58,7 @@ namespace Flug {
 			device->start();
 			m_devmgr->registerDevice(devName, device);
 			m_dispatcher->registerModule(devName, device);
+            m_archBackend->addDeviceArchive(devName, drvName);
 		}
 	}
 
@@ -116,16 +122,21 @@ namespace Flug {
 		contents << file.rdbuf();
 		std::string confStr = contents.str();
 
-		Json::Reader reader;
-		reader.parse(confStr, m_configuration);
-		std::cout << "Starting Flugegeheimen on " << m_configuration["server"]["port"].asString() << std::endl;
+        m_configuration = JsonBson(confStr);
+        m_archive->loadConfig(m_configuration["database"]);
+
+        std::cout << "Starting Flugegeheimen on " << m_configuration["server"]["port"].asString() << std::endl;
+
 	}
 
 	void Kernel::initialize(const std::string &configPath) {
 		registerDrivers();
 		loadConfig(configPath);
+        m_archBackend->connect();
 		registerModules();
 		registerDevices();
 	}
 
 }
+
+

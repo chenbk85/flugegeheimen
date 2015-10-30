@@ -16,6 +16,7 @@ namespace Flug {
 
 	void Dispatcher::registerModule(const std::string &moduleName, Module *module) {
 		m_modules[moduleName] = HandlerRecord(moduleName, module);
+        std::cout << "Registered module " << moduleName << std::endl;
 	}
 
 	bool Dispatcher::dispatchRequest(const std::string &request, PollingBuffer * pbuf) {

@@ -106,4 +106,14 @@ namespace Flug {
 		resp = root;
 		return true;
 	}
+
+    void DeviceManager::getDevicesList(std::list<std::pair<std::string, std::string> > &devices) {
+        devices.clear();
+        std::pair<std::string, std::string> tmpDev;
+        for (auto iter = m_devices.begin(); iter != m_devices.end(); iter++) {
+            tmpDev.first = iter->second->getDeviceName();
+            tmpDev.second = iter->second->getDeviceType();
+            devices.push_back(tmpDev);
+        }
+    }
 }

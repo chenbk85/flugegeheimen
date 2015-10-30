@@ -1,56 +1,65 @@
 {
-    "server":{
-        "port":"2345"
-    },
-    "devices":[
-        {"device":"TrashyDevice","driver":"DummyDevice"},
-        {"device":"MSO9254A","driver":"AgilentOscope",
-            "config": {
-                "addr":"172.16.13.238",
-                "port":"5025"
-            }
-        },
-        {"device":"Timer1","driver":"NskTimer",
-            "config": {
-                "channelsNumber":8,
-                "delays": [10, 10, 10, 10, 10, 10, 10, 10],
-                "addr":"192.168.0.93",
-                "port":"2001"
-            }
-        },
-        /*{"device":"SlowAdc","driver":"NskSlowAdc",
-            "config": {
-                "addr": "192.168.0.114",
-                "controlPort": "2001",
-                "infoPort": "2000",
-                "dacPort": "2002",
-                "firmware": "res/SlowAdcFirmware.bin",
-                "highVoltage": true
-            }
-        },*/
-        {"device":"FastAdc44","driver":"NskFastAdc",
-            "config": {
-                "addr": "192.168.0.44",
-                "controlPort": "2001",
-                "infoPort": "2000",
-                "firmware": "res/FastAdcFirmware.bin"
-            }
-        },
-        {"device":"FastAdc45","driver":"NskFastAdc",
-            "config": {
-                "addr": "192.168.0.45",
-                "controlPort": "2001",
-                "infoPort": "2000",
-                "firmware": "res/FastAdcFirmware.bin"
-            }
-        },
-        {"device":"FastAdc46","driver":"NskFastAdc",
-            "config": {
-                "addr": "192.168.0.46",
-                "controlPort": "2001",
-                "infoPort": "2000",
-                "firmware": "res/FastAdcFirmware.bin"
-            }
+  "server": {
+    "port": "2345"
+  },
+  "database": {
+    "uri": "127.0.0.1:27017",
+    "database": "flugegeheimen",
+    "user": "flug",
+    "pass": "qwerty"
+  },
+  "devices": [
+    {
+      "device": "TrashyDevice",
+      "driver": "DummyDevice"
+    }
+    /*{"device":"MSO9254A","driver":"AgilentOscope",
+        "config": {
+            "addr":"172.16.13.238",
+            "port":"5025"
         }
-    ]
+    },
+    {"device":"Timer1","driver":"NskTimer",
+        "config": {
+            "channelsNumber":8,
+            "delays": [10, 10, 10, 10, 10, 10, 10, 10],
+            "addr":"192.168.0.93",
+            "port":"2001"
+        }
+    },*/
+    /*{"device":"SlowAdc","driver":"NskSlowAdc",
+        "config": {
+            "addr": "192.168.0.114",
+            "controlPort": "2001",
+            "infoPort": "2000",
+            "dacPort": "2002",
+            "firmware": "res/SlowAdcFirmware.bin",
+            "highVoltage": true
+        }
+    },*/
+    /*{"device":"FastAdc44","driver":"NskFastAdc",
+        "config": {
+            "addr": "192.168.0.44",
+            "controlPort": "2001",
+            "infoPort": "2000",
+            "firmware": "res/FastAdcFirmware.bin"
+        }
+    },
+    {"device":"FastAdc45","driver":"NskFastAdc",
+        "config": {
+            "addr": "192.168.0.45",
+            "controlPort": "2001",
+            "infoPort": "2000",
+            "firmware": "res/FastAdcFirmware.bin"
+        }
+    },
+    {"device":"FastAdc46","driver":"NskFastAdc",
+        "config": {
+            "addr": "192.168.0.46",
+            "controlPort": "2001",
+            "infoPort": "2000",
+            "firmware": "res/FastAdcFirmware.bin"
+        }
+    }*/
+  ]
 }

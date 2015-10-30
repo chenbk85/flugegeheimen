@@ -9,8 +9,8 @@
 #define MODULE_REQUEST_THROTTLING 10
 
 namespace Flug {
-    Module::Module(const std::string &deviceInstanceName) :
-            m_quitState(false), Configurable(deviceInstanceName) {
+    Module::Module(const std::string &configName) :
+            m_quitState(false), Configurable(configName) {
         m_inQueueCounter.store(0);
     }
 

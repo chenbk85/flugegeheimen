@@ -17,7 +17,7 @@ namespace Flug {
 		virtual bool handleRequest (Request & req, Response & resp) = 0;
 
 		Module () = delete;
-		Module (const std::string & deviceInstanceName);
+		Module (const std::string & configName);
 		virtual ~Module();
 		void start ();
 
@@ -39,7 +39,7 @@ namespace Flug {
 		std::mutex m_inQueueMutex;
 
 		boost::lockfree::spsc_queue<Response, boost::lockfree::capacity<1024> > m_outQueue;
-		std::atomic<uint32_t> m_outQueueCounter;
+
 
 		std::thread * m_thread;
 	private:
