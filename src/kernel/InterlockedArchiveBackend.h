@@ -2,6 +2,8 @@
 // Created by user on 30.10.15.
 //
 
+// Bitch, please. It is not interlocked at all.
+
 #ifndef PROJECT_INTERLOCKEDARCHIVEBACKEND_H
 #define PROJECT_INTERLOCKEDARCHIVEBACKEND_H
 

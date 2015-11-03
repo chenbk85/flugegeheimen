@@ -82,7 +82,6 @@ namespace Flug {
 					} else {
 						pbuf->sendMessage("\"status\":\"error\","
 												  "\"description\":\"Failed to dispatch message\"");
-
 					}
 				} else {
 					//std::cout << "#No message" << std::endl;
