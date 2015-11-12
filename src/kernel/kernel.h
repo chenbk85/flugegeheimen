@@ -9,6 +9,7 @@
 #include "ArchiveModule.h"
 #include "DeviceBuilder.h"
 #include "InterlockedArchiveBackend.h"
+#include "Intercom.h"
 
 namespace Flug {
 
@@ -45,6 +46,7 @@ namespace Flug {
 		MonitorModule * m_monitor;
 		DeviceBuilder * m_deviceBuilder;
         InterlockedArchiveBackend * m_archBackend;
+        Intercom & m_intercom;
 
 	};
 

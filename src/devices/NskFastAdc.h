@@ -33,8 +33,6 @@ namespace  Flug {
         void readDataPage (uint16_t * data);
         uint16_t readAllPages ();
 
-
-
     private:
 
         uint16_t readRegister (uint8_t reg);
@@ -46,19 +44,13 @@ namespace  Flug {
         void softStart ();
         void dropPage();
 
-
-
         void setOffset (uint16_t offset);
         void setPage(uint16_t address);
         void setDataPagesCount (uint16_t pages);
 
-
-
         uint16_t getPagesCount ();
         uint16_t getPage();
         uint16_t getOffset ();
-
-
 
         Socket m_controlSock;
         Socket m_infoSock;

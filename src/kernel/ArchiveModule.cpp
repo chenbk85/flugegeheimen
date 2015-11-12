@@ -28,10 +28,12 @@ namespace Flug {
     }
 
     bool ArchiveModule::initModule() {
+        //m_backend->connect();
         return true;
     }
 
     bool ArchiveModule::destroyModule() {
+        //m_backend->disconnect();
         return true;
     }
 

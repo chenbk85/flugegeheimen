@@ -18,15 +18,15 @@
             "addr":"172.16.13.238",
             "port":"5025"
         }
-    }
-    /*{"device":"Timer1","driver":"NskTimer",
+    },
+    {"device":"Timer1","driver":"NskTimer",
         "config": {
             "channelsNumber":8,
             "delays": [10, 10, 10, 10, 10, 10, 10, 10],
             "addr":"192.168.0.93",
             "port":"2001"
         }
-    },*/
+    },
     /*{"device":"SlowAdc","driver":"NskSlowAdc",
         "config": {
             "addr": "192.168.0.114",
@@ -37,29 +37,70 @@
             "highVoltage": true
         }
     },*/
-    /*{"device":"FastAdc44","driver":"NskFastAdc",
-        "config": {
-            "addr": "192.168.0.44",
-            "controlPort": "2001",
-            "infoPort": "2000",
-            "firmware": "res/FastAdcFirmware.bin"
-        }
+    {"device":"FastAdc41","driver":"NskFastAdc",
+      "config": {
+        "addr": "192.168.0.41",
+        "controlPort": "2001",
+        "infoPort": "2000",
+        "firmware": "res/FastAdcFirmware.bin"
+      }
+    },
+    {"device":"FastAdc42","driver":"NskFastAdc",
+      "config": {
+        "addr": "192.168.0.42",
+        "controlPort": "2001",
+        "infoPort": "2000",
+        "firmware": "res/FastAdcFirmware.bin"
+      }
+    },
+    {"device":"FastAdc43","driver":"NskFastAdc",
+      "config": {
+        "addr": "192.168.0.43",
+        "controlPort": "2001",
+        "infoPort": "2000",
+        "firmware": "res/FastAdcFirmware.bin"
+      }
+    },
+    {"device":"FastAdc44","driver":"NskFastAdc",
+      "config": {
+        "addr": "192.168.0.44",
+        "controlPort": "2001",
+        "infoPort": "2000",
+        "firmware": "res/FastAdcFirmware.bin"
+      }
     },
     {"device":"FastAdc45","driver":"NskFastAdc",
-        "config": {
-            "addr": "192.168.0.45",
-            "controlPort": "2001",
-            "infoPort": "2000",
-            "firmware": "res/FastAdcFirmware.bin"
-        }
+      "config": {
+        "addr": "192.168.0.45",
+        "controlPort": "2001",
+        "infoPort": "2000",
+        "firmware": "res/FastAdcFirmware.bin"
+      }
     },
     {"device":"FastAdc46","driver":"NskFastAdc",
-        "config": {
-            "addr": "192.168.0.46",
-            "controlPort": "2001",
-            "infoPort": "2000",
-            "firmware": "res/FastAdcFirmware.bin"
-        }
-    }*/
+      "config": {
+        "addr": "192.168.0.46",
+        "controlPort": "2001",
+        "infoPort": "2000",
+        "firmware": "res/FastAdcFirmware.bin"
+      }
+    },
+    {"device":"FastAdc31","driver":"NskFastAdc",
+      "config": {
+        "addr": "192.168.0.32",
+        "controlPort": "2001",
+        "infoPort": "2000",
+        "firmware": "res/FastAdcFirmware.bin"
+      }
+    },
+    {"device":"FastAdc33","driver":"NskFastAdc",
+      "config": {
+        "addr": "192.168.0.33",
+        "controlPort": "2001",
+        "infoPort": "2000",
+        "firmware": "res/FastAdcFirmware.bin"
+      }
+    }
+
   ]
 }

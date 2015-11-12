@@ -7,3 +7,6 @@
 [submodule "flugegeheimen-webapp"]
 	path = flugegeheimen-webapp
 	url = git@github.com:achernakov/flugegeheimen-webapp.git
+[submodule "flugegeheimen-upstream-module"]
+	path = flugegeheimen-upstream-module
+	url = git@github.com:achernakov/flugegeheimen-upstream-module.git

@@ -6,7 +6,7 @@ set (FLUG_SOURCES src/main.cpp src/kernel/kernel.cpp src/helpers/socket.cpp src/
         src/kernel/DeviceDriver.cpp src/kernel/RequestEnumerator.cpp src/devices/AgilentOscope.cpp
         src/kernel/MonitorModule.cpp src/devices/NskSlowAdc.cpp src/kernel/BinBuilder.cpp src/kernel/Configurable.cpp
         src/devices/NskTimer.cpp src/devices/NskFastAdc.cpp src/kernel/DeviceHypervisor.cpp
-        src/kernel/ArchiveModule.cpp src/kernel/JsonBson.cpp src/kernel/JsonBson.h src/kernel/MongoClient.cpp src/kernel/MongoClient.h src/kernel/InterlockedArchiveBackend.cpp src/kernel/InterlockedArchiveBackend.h src/kernel/DeviceProxy.cpp src/kernel/DeviceProxy.h src/kernel/DeviceCache.cpp src/kernel/DeviceCache.h)
+        src/kernel/ArchiveModule.cpp src/kernel/JsonBson.cpp src/kernel/JsonBson.h src/kernel/MongoClient.cpp src/kernel/MongoClient.h src/kernel/InterlockedArchiveBackend.cpp src/kernel/InterlockedArchiveBackend.h src/kernel/DeviceProxy.cpp src/kernel/DeviceProxy.h src/kernel/DeviceCache.cpp src/kernel/DeviceCache.h src/kernel/Intercom.cpp src/kernel/Intercom.h src/devices/NskCrate.cpp src/devices/NskCrate.h)
 
 set(Boost_USE_STATIC_LIBS        ON)
 set(Boost_USE_MULTITHREADED      ON)

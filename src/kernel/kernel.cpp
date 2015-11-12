@@ -5,6 +5,7 @@
 #include "../devices/NskSlowAdc.h"
 #include "../devices/NskTimer.h"
 #include "../devices/NskFastAdc.h"
+#include "../devices/NskCrate.h"
 
 
 namespace Flug {
@@ -12,7 +13,8 @@ namespace Flug {
 	static const int MaxEventsNo = 10;
 
 	Kernel::Kernel() :
-    m_archBackend(new InterlockedArchiveBackend()) {
+    m_archBackend(new InterlockedArchiveBackend()),
+    m_intercom(Intercom::getInstance()) {
 		m_devmgr = new DeviceManager();
 		m_dispatcher = new Dispatcher();
 		m_monitor = new MonitorModule();
@@ -40,6 +42,7 @@ namespace Flug {
 		m_deviceBuilder->registerDeviceDriver<NskSlowAdc> ("NskSlowAdc");
 		m_deviceBuilder->registerDeviceDriver<NskFastAdc>("NskFastAdc");
 		m_deviceBuilder->registerDeviceDriver<NskTimer> ("NskTimer");
+        m_deviceBuilder->registerDeviceDriver<NskCrate> ("NskCrate");
 	}
 
 	void Kernel::registerDevices() {
@@ -88,6 +91,17 @@ namespace Flug {
 				}
 			}
 
+            // Handle Intercom.
+
+            Intercom & intercom = Intercom::getInstance();
+            while (intercom.hasMessages()) {
+                Intercom::IntercomMsg * msg;
+                msg = intercom.popMessage();
+                if (!msg) {
+                    break;
+                }
+            }
+
 			Response resp;
 			while (m_dispatcher->checkForResponses(resp)) {
 				if (resp.m_pbuf) {
@@ -125,7 +139,6 @@ namespace Flug {
         m_archive->loadConfig(m_configuration["database"]);
 
         std::cout << "Starting Flugegeheimen on " << m_configuration["server"]["port"].asString() << std::endl;
-
 	}
 
 	void Kernel::initialize(const std::string &configPath) {

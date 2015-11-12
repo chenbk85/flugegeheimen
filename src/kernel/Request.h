@@ -9,6 +9,11 @@
 #include "PollingBuffer.h"
 
 namespace Flug {
+
+    /**
+     * Request structure contains the requests to module passed by other
+     * modules and/or user interfaces
+     */
 	struct Request {
 		Request() {};
 
@@ -25,11 +30,13 @@ namespace Flug {
 			RequestEnumerator & enumer = RequestEnumerator::getInstance();
 			m_id = enumer.getRequestId();
 			m_pbuf = pbuf;
+            m_specificSender = false;
 		}
 
-		Request (const Request & oth) :
+        Request (const Request & oth) :
 				m_id(oth.m_id), m_json(oth.m_json), m_string(oth.m_string),
-				m_parsed(oth.m_parsed), m_pbuf(oth.m_pbuf) {
+				m_parsed(oth.m_parsed), m_pbuf(oth.m_pbuf),
+                m_specificSender(oth.m_specificSender), m_sender(oth.m_sender) {
 		}
 
 		Request &operator= (const Request & oth) {
@@ -44,6 +51,8 @@ namespace Flug {
 		Json::Value m_json;
 		bool m_parsed;
 		uint64_t m_id;
+        bool m_specificSender;
+        std::string m_sender;
 		PollingBuffer * m_pbuf;
 	};
 
