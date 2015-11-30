@@ -7,6 +7,7 @@
 
 #include "../kernel/request_builder.h"
 #include "../kernel/response_parser.h"
+#include "../kernel/JsonBson.h"
 
 #define CMD_HEADER ((uint8_t)0x80)
 #define CMD_READ ((uint8_t)0x0)
@@ -94,6 +95,18 @@ namespace Flug {
             return handleGetData(req, resp);
         } else if (reqtype == "setPagesCount") {
             return handleSetPagesCount(req, resp);
+        } else if (reqtype == "waitForTrigger") {
+            return handleWaitForTrigger(req, resp);
+        } else if (reqtype == "softStart") {
+            return handleSoftStart(req, resp);
+        } else if (reqtype == "calibrate") {
+            return handleCalibration(req, resp);
+        } else if (reqtype == "downloadData") {
+            return handleDownloadData(req, resp);
+        } else if (reqtype == "setOffset") {
+            return handleSetOffset (req, resp);
+        } else if (reqtype == "ping") {
+            return handlePing(req, resp);
         }
 
         return false;
@@ -224,7 +237,7 @@ namespace Flug {
         if (pages < 1 || pages > 0x400) {
             throw std::runtime_error("Too much pages!");
         }
-        writeRegister(REG_PAGES_COUNT, pages);
+        writeRegister(REG_PAGES_COUNT, pages - 1);
         m_pagesCount = pages;
     }
 
@@ -296,6 +309,82 @@ namespace Flug {
 
         setDataPagesCount(req.m_json["pagesCount"].asUInt());
 
+        resp = root;
+        return true;
+    }
+
+    bool NskFastAdc::handleSoftStart(Request &req, Response &resp) {
+        Json::Value root;
+        root["status"] = "success";
+
+        softStart();
+
+        resp = root;
+        return true;
+    }
+
+    bool NskFastAdc::handleWaitForTrigger(Request &req, Response &resp) {
+        Json::Value root;
+        root["status"] = "success";
+
+        dropPage();
+        allowStart();
+
+        resp = root;
+        return true;
+    }
+
+    bool NskFastAdc::handleDownloadData(Request &req, Response &resp) {
+        Json::Value root;
+        root["status"] = "success";
+        root["xincr"] = 1;
+
+        dropPage();
+
+        uint16_t pages = readAllPages();
+
+        for (int i = 0; i < pages * DATA_PAGE_SIZE; i++) {
+            root["data"][0][i] = m_data[i];
+        }
+
+        resp = root;
+        return true;
+    }
+
+    bool NskFastAdc::handleCalibration(Request &req, Response &resp) {
+        Json::Value root;
+        root["status"] = "success";
+        clearRegisters();
+        initPll();
+
+        //Calibra
+        writeRegister(0x4, 0x0085);
+        softStart();
+
+        usleep(100);
+        dropPage();
+        setOffset(0x800);
+        resp = root;
+        return true;
+    }
+
+    bool NskFastAdc::handleSetOffset(Request &req, Response &resp) {
+        Json::Value root;
+        root["status"] = "success";
+
+        dropPage();
+        uint16_t offset = req.m_json["offset"].asUInt();
+        setOffset(offset);
+
+        resp = root;
+        return true;
+    }
+
+    bool NskFastAdc::handlePing(Request &req, Response &resp) {
+        Json::Value root;
+        root["status"] = "success";
+        JsonBson data = std::string("[]");
+        root["data"][0] = (Json::Value)data;
         resp = root;
         return true;
     }

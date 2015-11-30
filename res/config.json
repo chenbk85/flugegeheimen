@@ -84,22 +84,6 @@
         "infoPort": "2000",
         "firmware": "res/FastAdcFirmware.bin"
       }
-    },
-    {"device":"FastAdc31","driver":"NskFastAdc",
-      "config": {
-        "addr": "192.168.0.32",
-        "controlPort": "2001",
-        "infoPort": "2000",
-        "firmware": "res/FastAdcFirmware.bin"
-      }
-    },
-    {"device":"FastAdc33","driver":"NskFastAdc",
-      "config": {
-        "addr": "192.168.0.33",
-        "controlPort": "2001",
-        "infoPort": "2000",
-        "firmware": "res/FastAdcFirmware.bin"
-      }
     }
 
   ]

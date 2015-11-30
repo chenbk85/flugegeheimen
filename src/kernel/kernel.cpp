@@ -79,12 +79,12 @@ namespace Flug {
 					std::cout << "[" << msg << "]" << std::endl;
 					if (m_dispatcher->hasModule(msg)) {
 						if (!m_dispatcher->dispatchRequest(msg, pbuf)) {
-							pbuf->sendMessage("\"status\":\"error\","
-													  "\"description\":\"Failed to dispatch message\"");
+							pbuf->sendMessage("{\"status\":\"error\","
+									"\"description\":\"Failed to dispatch message\"}");
 						}
 					} else {
-						pbuf->sendMessage("\"status\":\"error\","
-												  "\"description\":\"Failed to dispatch message\"");
+						pbuf->sendMessage("{\"status\":\"error\","
+                              "\"description\":\"Failed to dispatch message\"}");
 					}
 				} else {
 					//std::cout << "#No message" << std::endl;
@@ -138,7 +138,8 @@ namespace Flug {
         m_configuration = JsonBson(confStr);
         m_archive->loadConfig(m_configuration["database"]);
 
-        std::cout << "Starting Flugegeheimen on " << m_configuration["server"]["port"].asString() << std::endl;
+        std::cout << "Starting Flugegeheimen on " <<
+                m_configuration["server"]["port"].asString() << std::endl;
 	}
 
 	void Kernel::initialize(const std::string &configPath) {
