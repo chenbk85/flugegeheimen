@@ -10,23 +10,43 @@
   },
   "devices": [
     {
-      "device": "TrashyDevice",
+      "device": "TrashyDevice1",
       "driver": "DummyDevice"
     },
-    {"device":"MSO9254A","driver":"AgilentOscope",
+    {
+      "device": "TrashyDevice2",
+      "driver": "DummyDevice"
+    },
+    {
+      "device": "TrashyDevice3",
+      "driver": "DummyDevice"
+    },
+    {
+      "device": "TrashyDevice4",
+      "driver": "DummyDevice"
+    },
+    {
+      "device": "TrashyDevice5",
+      "driver": "DummyDevice"
+    },
+    {
+      "device": "TrashyDevice6",
+      "driver": "DummyDevice"
+    }
+    /*{"device":"MSO9254A","driver":"AgilentOscope",
         "config": {
             "addr":"172.16.13.238",
             "port":"5025"
         }
-    },
-    {"device":"Timer1","driver":"NskTimer",
+    }*/
+    /*{"device":"Timer1","driver":"NskTimer",
         "config": {
             "channelsNumber":8,
             "delays": [10, 10, 10, 10, 10, 10, 10, 10],
             "addr":"192.168.0.93",
             "port":"2001"
         }
-    },
+    }*/
     /*{"device":"SlowAdc","driver":"NskSlowAdc",
         "config": {
             "addr": "192.168.0.114",
@@ -37,7 +57,7 @@
             "highVoltage": true
         }
     },*/
-    {"device":"FastAdc41","driver":"NskFastAdc",
+    /*{"device":"FastAdc41","driver":"NskFastAdc",
       "config": {
         "addr": "192.168.0.41",
         "controlPort": "2001",
@@ -84,7 +104,7 @@
         "infoPort": "2000",
         "firmware": "res/FastAdcFirmware.bin"
       }
-    }
+    }*/
 
   ]
 }

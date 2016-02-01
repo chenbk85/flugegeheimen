@@ -4,6 +4,7 @@
 
 #include "../stdafx.h"
 #include "AgilentOscope.h"
+#include "../kernel/JsonBson.h"
 
 #define INFINIIUM_BUF_SIZE ((size_t)(1024 * 10))
 
@@ -19,7 +20,7 @@ namespace Flug {
 
 	bool AgilentOscope::initModule() {
 		try {
-			m_sock.connect("172.16.13.238", "5025");
+			m_sock.connect(m_addr, m_port);
 			m_connected = true;
 			return true;
 		} catch (std::runtime_error &err) {
@@ -136,7 +137,9 @@ namespace Flug {
 				root["xincr"] = xIncr;
 
 				command(":CHAN" + chno + ":DISPLAY ON");
-			}
+			} else {
+                root["data"][i-1] = (Json::Value) JsonBson(std::string("[]"));
+            }
 		}
 		command(":RUN");
 
@@ -319,6 +322,8 @@ namespace Flug {
 
 
 	bool AgilentOscope::loadConfig(Json::Value & config) {
+        m_port = config["port"].asString();
+        m_addr = config["addr"].asString();
 
 		return true;
 	}

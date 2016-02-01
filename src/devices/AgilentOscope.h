@@ -24,6 +24,9 @@ namespace Flug {
 		Socket m_sock;
 		bool m_connected;
 
+        std::string m_addr;
+        std::string m_port;
+
 		bool command (const std::string & str);
 		bool commandUnsafe (const std::string & str);
 		bool request (const std::string & req, std::string & resp);
