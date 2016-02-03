@@ -11,7 +11,7 @@
 
 namespace Flug {
 
-	class Dispatcher {
+	class RemoteDispatcher {
 		struct HandlerRecord {
 			HandlerRecord (const std::string & name, Module * module) :
 					m_name(name), m_module(module) {};
@@ -27,15 +27,15 @@ namespace Flug {
 
 			HandlerRecord (const HandlerRecord & oth) :
 					m_name(oth.m_name), m_module(oth.m_module) {
-			}
+            };
 
 			std::string m_name;
 			Module * m_module;
 		};
 	public:
-		Dispatcher();
+		RemoteDispatcher();
 
-		virtual ~Dispatcher();
+		virtual ~RemoteDispatcher();
 
 		void registerModule(const std::string &moduleName, Module *module);
 		bool dispatchRequest(const std::string & request, PollingBuffer * pbuf);

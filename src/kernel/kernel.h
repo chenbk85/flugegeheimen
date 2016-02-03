@@ -2,7 +2,8 @@
 
 #include "../helpers/socket.h"
 #include "pool.h"
-#include "Dispatcher.h"
+#include "RemoteDispatcher.h"
+#include "LocalDispatcher.h"
 #include "DeviceManager.h"
 #include "DeviceDriver.h"
 #include "MonitorModule.h"
@@ -40,7 +41,8 @@ namespace Flug {
 		Json::Value m_configuration;
 		Socket m_gateway;
 		ConnectionPool m_pool;
-		Dispatcher * m_dispatcher;
+		RemoteDispatcher * m_remoteDispatcher;
+        LocalDispatcher * m_localDispatcher;
 		DeviceManager * m_devmgr;
 		ArchiveModule * m_archive;
 		MonitorModule * m_monitor;

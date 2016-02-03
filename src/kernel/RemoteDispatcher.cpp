@@ -3,23 +3,23 @@
 //
 
 #include "../stdafx.h"
-#include "Dispatcher.h"
+#include "RemoteDispatcher.h"
 #include "RequestEnumerator.h"
 
 
 namespace Flug {
-    Dispatcher::Dispatcher() {
+    RemoteDispatcher::RemoteDispatcher() {
     }
 
-    Dispatcher::~Dispatcher() {
+    RemoteDispatcher::~RemoteDispatcher() {
     }
 
-    void Dispatcher::registerModule(const std::string &moduleName, Module *module) {
+    void RemoteDispatcher::registerModule(const std::string &moduleName, Module *module) {
         m_modules[moduleName] = HandlerRecord(moduleName, module);
-        std::cout << "Registered module " << moduleName << std::endl;
+        std::cout << "Registered REMOTE module " << moduleName << std::endl;
     }
 
-    bool Dispatcher::dispatchRequest(const std::string &request, PollingBuffer *pbuf) {
+    bool RemoteDispatcher::dispatchRequest(const std::string &request, PollingBuffer *pbuf) {
         Json::Reader reader;
         Json::Value root;
         std::string modName;
@@ -32,7 +32,7 @@ namespace Flug {
         modName = root["subsystem"].asString();
 
         std::cout << "Module name: " << modName << std::endl;
-        if (!m_modules[modName].m_module->pushRequest(req)) {
+        if (!m_modules[modName].m_module->pushRemoteRequest(req)) {
             //send error "queue overflow" or "wrong request format"
             return false;
         }
@@ -40,11 +40,11 @@ namespace Flug {
     }
 
 
-    bool Dispatcher::checkForResponses(Response &response) {
+    bool RemoteDispatcher::checkForResponses(Response &response) {
         for (auto iter = m_modules.begin(); iter != m_modules.end(); iter++) {
             if (iter->second.m_module) {
                 Response tempResp;
-                if (iter->second.m_module->popResponse(tempResp)) {
+                if (iter->second.m_module->popRemoteResponse(tempResp)) {
                     response = tempResp;
                     return true;
                 }
@@ -53,7 +53,7 @@ namespace Flug {
         return false;
     }
 
-    bool Dispatcher::hasModule(const std::string &request) {
+    bool RemoteDispatcher::hasModule(const std::string &request) {
         Json::Reader reader;
         Json::Value root;
         std::string modName;

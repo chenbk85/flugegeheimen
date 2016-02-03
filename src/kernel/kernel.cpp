@@ -16,7 +16,9 @@ namespace Flug {
     m_archBackend(new InterlockedArchiveBackend()),
     m_intercom(Intercom::getInstance()) {
 		m_devmgr = new DeviceManager();
-		m_dispatcher = new Dispatcher();
+		m_remoteDispatcher = new RemoteDispatcher();
+        m_localDispatcher = new LocalDispatcher();
+        LocalDispatcherPtr::get().setPointer(m_localDispatcher);
 		m_monitor = new MonitorModule();
 		m_deviceBuilder = new DeviceBuilder();
 		m_archive = new ArchiveModule(m_archBackend);
@@ -31,9 +33,12 @@ namespace Flug {
 	}
 
 	void Kernel::registerModules() {
-		m_dispatcher->registerModule("devmgr", m_devmgr);
-		m_dispatcher->registerModule("monitor", m_monitor);
-        m_dispatcher->registerModule("database", m_archive);
+		m_remoteDispatcher->registerModule("devmgr", m_devmgr);
+		m_remoteDispatcher->registerModule("monitor", m_monitor);
+        m_remoteDispatcher->registerModule("database", m_archive);
+        m_localDispatcher->registerModule("devmgr", m_devmgr);
+        m_localDispatcher->registerModule("monitor", m_monitor);
+        m_localDispatcher->registerModule("database", m_archive);
 	}
 
 	void Kernel::registerDrivers() {
@@ -60,7 +65,8 @@ namespace Flug {
 			device->loadConfig(m_configuration["devices"][i]["config"]);
 			device->start();
 			m_devmgr->registerDevice(devName, device);
-			m_dispatcher->registerModule(devName, device);
+			m_remoteDispatcher->registerModule(devName, device);
+            m_localDispatcher->registerModule(devName, device);
             m_archBackend->addDeviceArchive(devName, drvName);
 		}
 	}
@@ -77,8 +83,8 @@ namespace Flug {
 				std::string msg;
 				if (pbuf->recvMessage(msg)) { //!check for recieved requests
 					std::cout << "[" << msg << "]" << std::endl;
-					if (m_dispatcher->hasModule(msg)) {
-						if (!m_dispatcher->dispatchRequest(msg, pbuf)) {
+					if (m_remoteDispatcher->hasModule(msg)) {
+						if (!m_remoteDispatcher->dispatchRequest(msg, pbuf)) {
 							pbuf->sendMessage("{\"status\":\"error\","
 									"\"description\":\"Failed to dispatch message\"}");
 						}
@@ -91,25 +97,35 @@ namespace Flug {
 				}
 			}
 
-            // Handle Intercom.
+            Request req;
+            while (m_localDispatcher->checkForRequests(req)) {
+                if (m_localDispatcher->hasModule(req.m_string)) {
+                    if (!m_localDispatcher->dispatchRequest(req.m_string, req.m_module)) {
+                        throw std::runtime_error("Failed to dispatch local request");
+                    }
+                } else {
+                    throw std::runtime_error("Failed to find module (local)");
 
-            Intercom & intercom = Intercom::getInstance();
-            while (intercom.hasMessages()) {
-                Intercom::IntercomMsg * msg;
-                msg = intercom.popMessage();
-                if (!msg) {
-                    break;
                 }
             }
 
 			Response resp;
-			while (m_dispatcher->checkForResponses(resp)) {
+			while (m_remoteDispatcher->checkForResponses(resp)) {
 				if (resp.m_pbuf) {
 					resp.m_pbuf->sendMessage(resp.m_string);
 				} else {
 					throw std::runtime_error("Null pointer instead of pbuf");
 				}
 			}
+
+
+            while (m_localDispatcher->checkForResponses(resp)) {
+                if (resp.m_module) {
+                    resp.m_module->pushLocalResponse(resp);
+                } else {
+                    throw std::runtime_error("Null pointer instead of module");
+                }
+            }
 		}
 	}
 

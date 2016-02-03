@@ -33,7 +33,6 @@ namespace Flug {
             return handleGetData(req, resp);
         }
 
-
         return false;
     }
 

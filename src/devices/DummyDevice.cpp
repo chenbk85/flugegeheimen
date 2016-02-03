@@ -34,14 +34,17 @@ namespace Flug {
 		std::string reqtype = req.m_json["reqtype"].asString();
 		Json::Value root;
 
-
 		if (reqtype == "getDeviceInfo") {
-			root["deviceType"] = "DummyDevice";
+			root["deviceType"] = m_deviceName;
 			root["deviceName"] = "DummyDevice";
 			root["deviceStatus"] = "online";
 			root["status"] = "success";
 			resp = root;
 			return true;
+		} else if (reqtype == "testLocal") {
+            Request lreq("{\"subsystem\":\"TrashyDevice3\",\"reqtype\":\"getDeviceInfo\"}", this);
+            localRequest(lreq, resp);
+            return true;
 		} else if (reqtype == "getDummyData") {
 			char data[0x100];
 			getData(data, 0x100);

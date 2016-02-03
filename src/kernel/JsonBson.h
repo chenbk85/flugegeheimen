@@ -5,6 +5,8 @@
 #ifndef PROJECT_JSONBSON_H
 #define PROJECT_JSONBSON_H
 
+#include "Response.h"
+
 namespace Flug {
 
     class JsonBson {

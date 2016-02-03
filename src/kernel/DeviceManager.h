@@ -6,7 +6,7 @@
 
 #include "DeviceDriver.h"
 #include "Module.h"
-#include "Dispatcher.h"
+#include "RemoteDispatcher.h"
 
 namespace Flug {
 	class DeviceManager : public Module {
@@ -23,7 +23,7 @@ namespace Flug {
 		virtual bool destroyModule ();
 		virtual bool handleRequest (Request & req, Response & resp);
 
-		bool initDevices (Dispatcher * dispatcher, Json::Value & devList);
+		bool initDevices (RemoteDispatcher * dispatcher, Json::Value & devList);
 
         void getDevicesList (std::list<std::pair<std::string, std::string> > & devices);
 

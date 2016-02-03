@@ -31,10 +31,9 @@ namespace Flug {
 		return false;
 	}
 
-	bool DeviceManager::initDevices(Dispatcher * dispatcher, Json::Value &devList) {
+	bool DeviceManager::initDevices(RemoteDispatcher * dispatcher, Json::Value &devList) {
 
 		//TODO: Da faq.
-
 
 		return true;
 	}
