@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include "../stdafx.h"
 #include "../helpers/socket.h"
 
 namespace Flug {

@@ -51,6 +51,7 @@ namespace Flug {
         }
 
 
+
         Request (const Request & oth) :
 				m_id(oth.m_id), m_json(oth.m_json), m_string(oth.m_string),
 				m_parsed(oth.m_parsed), m_pbuf(oth.m_pbuf),

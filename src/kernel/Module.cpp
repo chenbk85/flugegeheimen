@@ -113,6 +113,11 @@ namespace Flug {
             throw std::runtime_error("Non-parsed request sent to module handling proc");
         }
 
+        resp.m_id = req.m_id;
+        resp.m_pbuf = req.m_pbuf;
+        resp.m_local = req.m_local;
+        resp.m_module = req.m_module;
+
         bool ret = handleRequest(req, resp);
 
         resp.m_id = req.m_id;
@@ -148,6 +153,37 @@ namespace Flug {
         }
     }
 
+    void Module::localMultiRequest(std::vector<Request> &reqs,
+                                   std::vector<Response> &resps) {
+        size_t count = reqs.size();
+        for (auto req: reqs) {
+            m_localRequestsQueue.push(req);
+        }
+        m_locRespCounter.store(0);
+        std::unique_lock<std::mutex> lk(m_locRespMutex);
+        m_locRespCv.wait(lk, [this, count]{return m_locRespCounter.load() == count;});
+        lk.unlock();
+
+        std::vector<Response> tmpResps;
+        Response tmpRes;
+        for (size_t i = 0; i < count; i++) {
+            if (!m_localResponsesQueue.pop(tmpRes)) {
+                throw std::runtime_error("Skew in local responses handling logic");
+            }
+            tmpResps.push_back(tmpRes);
+        }
+
+        resps.clear();
+        for (auto req: reqs) {
+            for (auto resp: tmpResps) {
+                if (resp.m_id == req.m_id) {
+                    resps.push_back(resp);
+                    break;
+                }
+            }
+        }
+    }
+
     bool Module::pushLocalResponse(Response &resp) {
         bool ret = m_localResponsesQueue.push(resp);
         if (ret) {
@@ -159,9 +195,6 @@ namespace Flug {
         return ret;
     }
 
-    void Module::localMultiRequest(std::vector<Request> &reqs, std::vector<Response> &resp) {
-        size_t count = reqs.size();
-    }
 
     bool Module::popLocalRequest(Request &req) {
         return m_localRequestsQueue.pop(req);

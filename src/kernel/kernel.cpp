@@ -6,6 +6,7 @@
 #include "../devices/NskTimer.h"
 #include "../devices/NskFastAdc.h"
 #include "../devices/NskCrate.h"
+#include "../devices/DummyCrate.h"
 
 
 namespace Flug {
@@ -48,6 +49,7 @@ namespace Flug {
 		m_deviceBuilder->registerDeviceDriver<NskFastAdc>("NskFastAdc");
 		m_deviceBuilder->registerDeviceDriver<NskTimer> ("NskTimer");
         m_deviceBuilder->registerDeviceDriver<NskCrate> ("NskCrate");
+        m_deviceBuilder->registerDeviceDriver<DummyCrate> ("DummyCrate");
 	}
 
 	void Kernel::registerDevices() {
@@ -100,7 +102,7 @@ namespace Flug {
             Request req;
             while (m_localDispatcher->checkForRequests(req)) {
                 if (m_localDispatcher->hasModule(req.m_string)) {
-                    if (!m_localDispatcher->dispatchRequest(req.m_string, req.m_module)) {
+                    if (!m_localDispatcher->dispatchRequest(req)) {
                         throw std::runtime_error("Failed to dispatch local request");
                     }
                 } else {

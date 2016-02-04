@@ -32,6 +32,13 @@
     {
       "device": "TrashyDevice6",
       "driver": "DummyDevice"
+    },
+    {
+      "device": "Crate1",
+      "driver": "DummyCrate",
+      "config": {
+        "devices": ["TrashyDevice1","TrashyDevice2","TrashyDevice3"]
+      }
     }
     /*{"device":"MSO9254A","driver":"AgilentOscope",
         "config": {

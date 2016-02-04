@@ -34,20 +34,13 @@ namespace  Flug {
         return false;
     }
 
-    bool LocalDispatcher::dispatchRequest(const std::string &request, Module *sender) {
-        Json::Reader reader;
-        Json::Value root;
+    bool LocalDispatcher::dispatchRequest(Request &request) {
         std::string modName;
-        Request req(request, sender);
 
-        if (!reader.parse(request, root)) {
-            //send error message, cancel processing
-            return false;
-        }
-        modName = root["subsystem"].asString();
+        modName = request.m_json["subsystem"].asString();
 
         std::cout << "Module name: " << modName << std::endl;
-        if (!m_modules[modName].m_module->pushLocalRequest(req)) {
+        if (!m_modules[modName].m_module->pushLocalRequest(request)) {
             //send error "queue overflow" or "wrong request format"
             return false;
         }

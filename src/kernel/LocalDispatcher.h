@@ -38,7 +38,7 @@ namespace Flug {
 
         void registerModule(const std::string &moduleName, Module *module);
 
-        bool dispatchRequest(const std::string &request, Module *sender);
+        bool dispatchRequest(Request &request);
 
         bool checkForResponses(Response &response);
 

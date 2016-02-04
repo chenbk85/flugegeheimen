@@ -41,7 +41,7 @@ namespace Flug {
 		void handleIncomingRequests ();
         void localRequest (Request &req, Response &resp);
         void localMultiRequest (std::vector<Request> &reqs,
-                                std::vector<Response> &resp);
+                                std::vector<Response> &resps);
 
 		bool m_quitState;
 

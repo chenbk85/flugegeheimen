@@ -42,7 +42,8 @@ namespace Flug {
 			resp = root;
 			return true;
 		} else if (reqtype == "testLocal") {
-            Request lreq("{\"subsystem\":\"TrashyDevice3\",\"reqtype\":\"getDeviceInfo\"}", this);
+            Request lreq("{\"subsystem\":\"TrashyDevice3\","
+                                 "\"reqtype\":\"getDeviceInfo\"}", this);
             localRequest(lreq, resp);
             return true;
 		} else if (reqtype == "getDummyData") {
