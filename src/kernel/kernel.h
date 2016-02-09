@@ -38,6 +38,8 @@ namespace Flug {
 
         void registerDevices();
 
+        void registerTasks();
+
         void registerScriptLangs ();
 
 

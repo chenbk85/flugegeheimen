@@ -19,13 +19,11 @@ namespace  Flug {
         try {
             boost::python::exec_file(m_scriptPath.c_str(), global, global);
         } catch (const boost::python::error_already_set & ex) {
-            std::string err = parsePythonException();
-            std::cout << "Error in Python: " << err << std::endl;
+            PyErr_Print();
         }
     }
 
     bool PythonModule::destroyModule() {
-
     }
 
 
@@ -34,7 +32,24 @@ namespace  Flug {
     }
 
     bool PythonModule::handleRequest(Request &req, Response &resp) {
-        return false;
+        boost::python::str pyReq = req.m_string.c_str();
+        boost::python::str pyResp;
+
+        boost::python::object main_module = boost::python::import("__main__");
+        boost::python::object global(main_module.attr("__dict__"));
+        boost::python::object handlingFunction = global["callable"];
+        boost::python::object respPtr;
+
+        try {
+             respPtr = handlingFunction(pyReq);
+        } catch (const boost::python::error_already_set & ex) {
+            PyErr_Print();
+        }
+
+        std::string rsp = extract<std::string>(respPtr);
+        resp.m_string = rsp;
+
+        return true;
     }
 
     bool PythonModule::rebootModule() {
@@ -58,7 +73,7 @@ namespace  Flug {
             else
                 ret = "Unknown exception type";
         }
-        if(value_ptr != NULL){
+        if(value_ptr != NULL) {
             boost::python::handle<> h_val(value_ptr);
             boost::python::str a(h_val);
             boost::python::extract<std::string> returned(a);

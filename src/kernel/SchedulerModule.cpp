@@ -46,16 +46,10 @@ namespace Flug {
         std::cout << "Loading script configuration" << std::endl <<
                 JsonBson(config).str() << std::endl;
 
-        for (int i = 0; i < config.size(); i++) {
-            Json::Value cfg = config[i];
-            startTask(cfg["lang"].asString(), cfg["name"].asString(),
-                    cfg["script"].asString());
-        }
-
         return true;
     }
 
-    void SchedulerModule::startTask(const std::string &lang, const std::string &name,
+    ScriptModule * SchedulerModule::startTask(const std::string &lang, const std::string &name,
                                     const std::string & script) {
         if (m_langs.find(lang) == m_langs.end()) {
             throw std::runtime_error(("Can't find fucking lang engine: " + lang).c_str());
@@ -63,7 +57,9 @@ namespace Flug {
         ScriptModule *task = m_langs[lang]->buildModule(name);
         task->loadScript(script);
         task->initModule();
+        task->start();
         registerTask(task, name);
+        return task;
     }
 
     void SchedulerModule::registerTask(ScriptModule *task, const std::string &name) {

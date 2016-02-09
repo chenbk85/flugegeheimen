@@ -51,7 +51,7 @@ namespace Flug {
 
         virtual bool rebootModule();
 
-        void startTask(const std::string &lang, const std::string &name,
+        ScriptModule * startTask(const std::string &lang, const std::string &name,
                        const std::string & script);
 
         template<class T>
