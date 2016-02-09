@@ -32,9 +32,7 @@ namespace Flug {
 	}
 
 	bool DeviceManager::initDevices(RemoteDispatcher * dispatcher, Json::Value &devList) {
-
 		//TODO: Da faq.
-
 		return true;
 	}
 
@@ -114,5 +112,9 @@ namespace Flug {
             tmpDev.second = iter->second->getDeviceType();
             devices.push_back(tmpDev);
         }
+    }
+
+    bool DeviceManager::rebootModule() {
+        return false;
     }
 }

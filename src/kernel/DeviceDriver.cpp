@@ -39,4 +39,10 @@ namespace Flug {
 		return m_deviceType;
 	}
 
+    bool DeviceDriver::rebootModule() {
+        if (destroyModule() && initModule()) {
+            return true;
+        }
+        return false;
+    }
 }

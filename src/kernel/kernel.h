@@ -10,47 +10,51 @@
 #include "ArchiveModule.h"
 #include "DeviceBuilder.h"
 #include "InterlockedArchiveBackend.h"
-#include "Intercom.h"
+#include "SchedulerModule.h"
+
 
 namespace Flug {
 
 
-	class Kernel {
-	public:
-		Kernel();
+    class Kernel {
+    public:
+        Kernel();
 
-		virtual ~Kernel();
+        virtual ~Kernel();
 
-		void main();
+        void main();
 
-		void initialize (const std::string & configPath);
+        void initialize(const std::string &configPath);
 
-	protected:
+    protected:
+
+        void handlingProc();
+
+        void loadConfig(const std::string &confPath);
+
+        void registerModules();
+
+        void registerDrivers();
+
+        void registerDevices();
+
+        void registerScriptLangs ();
 
 
-		void handlingProc();
+    private:
+        Json::Value m_configuration;
+        Socket m_gateway;
+        ConnectionPool m_pool;
+        RemoteDispatcher *m_remoteDispatcher;
+        LocalDispatcher *m_localDispatcher;
+        DeviceManager *m_devmgr;
+        ArchiveModule *m_archive;
+        MonitorModule *m_monitor;
+        DeviceBuilder *m_deviceBuilder;
+        InterlockedArchiveBackend *m_archBackend;
+        SchedulerModule *m_scheduler;
 
-		void loadConfig(const std::string &confPath);
-		void registerModules();
-		void registerDrivers ();
-		void registerDevices ();
-
-
-
-	private:
-		Json::Value m_configuration;
-		Socket m_gateway;
-		ConnectionPool m_pool;
-		RemoteDispatcher * m_remoteDispatcher;
-        LocalDispatcher * m_localDispatcher;
-		DeviceManager * m_devmgr;
-		ArchiveModule * m_archive;
-		MonitorModule * m_monitor;
-		DeviceBuilder * m_deviceBuilder;
-        InterlockedArchiveBackend * m_archBackend;
-        Intercom & m_intercom;
-
-	};
+    };
 
 
 }

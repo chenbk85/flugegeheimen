@@ -232,11 +232,14 @@ namespace Flug {
 			if (errno == EWOULDBLOCK) {
 				return false;
 			}
+            std::cout << "[RECV ERROR ERRNO: " << errno << "]" << std::endl;
+            if (errno == ECONNRESET) {
+                return true;
+            }
 			throw std::runtime_error("::recvNonblock() failed");
 		}
 		recvd = (size_t) ret;
 		return true;
-
 	}
 
 	bool Socket::sendNonblock(const uint8_t *data, size_t size, size_t &sent) {
@@ -247,13 +250,11 @@ namespace Flug {
 			if (errno == EWOULDBLOCK) {
 				return false;
 			}
-			std::cout << "errno: " << errno << std::endl;
+            std::cout << "[SEND ERROR ERRNO: " << errno << "]" << std::endl;
 			throw std::runtime_error("::sendNonblock() failed");
 		}
 		sent = (size_t) ret;
 		return true;
 	}
-
-
 
 }

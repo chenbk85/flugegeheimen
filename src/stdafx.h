@@ -33,6 +33,7 @@
 
 #include <boost/lockfree/spsc_queue.hpp>
 #include <boost/lockfree/queue.hpp>
+#include <boost/python.hpp>
 
 #include <mongo/client/dbclient.h>
 #include <mongo/db/json.h>

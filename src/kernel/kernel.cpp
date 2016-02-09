@@ -7,26 +7,30 @@
 #include "../devices/NskFastAdc.h"
 #include "../devices/NskCrate.h"
 #include "../devices/DummyCrate.h"
+#include "PythonModule.h"
 
 
 namespace Flug {
 
 	static const int MaxEventsNo = 10;
 
-	Kernel::Kernel() :
-    m_archBackend(new InterlockedArchiveBackend()),
-    m_intercom(Intercom::getInstance()) {
-		m_devmgr = new DeviceManager();
-		m_remoteDispatcher = new RemoteDispatcher();
+	Kernel::Kernel() {
+        Py_Initialize();
+
+        m_archBackend = new InterlockedArchiveBackend();
+        m_devmgr = new DeviceManager();
+        m_remoteDispatcher = new RemoteDispatcher();
         m_localDispatcher = new LocalDispatcher();
         LocalDispatcherPtr::get().setPointer(m_localDispatcher);
-		m_monitor = new MonitorModule();
-		m_deviceBuilder = new DeviceBuilder();
-		m_archive = new ArchiveModule(m_archBackend);
+        m_monitor = new MonitorModule();
+        m_deviceBuilder = new DeviceBuilder();
+        m_archive = new ArchiveModule(m_archBackend);
+        m_scheduler = new SchedulerModule("scheduler");
 
-		m_devmgr->start();
-		m_monitor->start();
-		m_archive->start();
+        m_devmgr->start();
+        m_monitor->start();
+        m_archive->start();
+        m_scheduler->start();
 	}
 
 	Kernel::~Kernel() {
@@ -37,9 +41,11 @@ namespace Flug {
 		m_remoteDispatcher->registerModule("devmgr", m_devmgr);
 		m_remoteDispatcher->registerModule("monitor", m_monitor);
         m_remoteDispatcher->registerModule("database", m_archive);
+        m_remoteDispatcher->registerModule("scheduler", m_scheduler);
         m_localDispatcher->registerModule("devmgr", m_devmgr);
         m_localDispatcher->registerModule("monitor", m_monitor);
         m_localDispatcher->registerModule("database", m_archive);
+        m_localDispatcher->registerModule("scheduler", m_scheduler);
 	}
 
 	void Kernel::registerDrivers() {
@@ -155,6 +161,7 @@ namespace Flug {
 
         m_configuration = JsonBson(confStr);
         m_archive->loadConfig(m_configuration["database"]);
+        m_scheduler->loadConfig(m_configuration["scripts"]);
 
         std::cout << "Starting Flugegeheimen on " <<
                 m_configuration["server"]["port"].asString() << std::endl;
@@ -162,11 +169,16 @@ namespace Flug {
 
 	void Kernel::initialize(const std::string &configPath) {
 		registerDrivers();
+        registerScriptLangs();
 		loadConfig(configPath);
         m_archBackend->connect();
 		registerModules();
 		registerDevices();
 	}
+
+    void Kernel::registerScriptLangs() {
+        m_scheduler->addLang<PythonModule>("python");
+    }
 
 }
 

@@ -3,9 +3,8 @@
 //
 
 #include "../stdafx.h"
+#include "../kernel/MulticastBuilder.h"
 #include "NskCrate.h"
-#include "../kernel/JsonBson.h"
-#include "../kernel/Intercom.h"
 
 namespace Flug {
 
@@ -31,24 +30,39 @@ namespace Flug {
 
         if (reqtype == "getData") {
             return handleGetData(req, resp);
+        } else if (reqtype == "setPagesCount") {
+            return handleSetPagesCount(req, resp);
+        } else if (reqtype == "waitForTrigger") {
+            return handleWaitForTrigger(req, resp);
+        } else if (reqtype == "softStart") {
+            return handleSoftStart(req, resp);
+        } else if (reqtype == "calibrate") {
+            return handleCalibration(req, resp);
+        } else if (reqtype == "downloadData") {
+            return handleDownloadData(req, resp);
+        } else if (reqtype == "setOffset") {
+            return handleSetOffset (req, resp);
+        } else if (reqtype == "ping") {
+            return handlePing(req, resp);
+        } else if (reqtype == "getAdcsList") {
+            return handleGetAdcsList(req, resp);
         }
-
         return false;
     }
 
     bool NskCrate::handleGetData(Request &req, Response &resp) {
         Json::Value root;
-        root["status"] = "success";
+        MulticastBuilder mcast(m_adcs, "getData", this);
+        localMultiRequest(mcast.getReqs(), mcast.getResps());
 
-        for (auto adc: m_adcs) {
-            Json::Value adcReq;
-            adcReq["subsystem"] = adc;
-            adcReq["reqtype"] = "getData";
-            req.m_json = JsonBson(adcReq).str();
-
-            Intercom::getInstance().sendRequest(adc, m_deviceName, req);
+        int i = 0;
+        for (auto lresp: mcast.getResps()) {
+            root["data"][i] = (Json::Value)(JsonBson(lresp.m_string));
+            i++;
         }
 
+        root["status"] = "success";
+        root["xincr"] = 1;
         resp = root;
         return true;
     }
@@ -60,4 +74,99 @@ namespace Flug {
     bool NskCrate::destroyModule() {
         return true;
     }
+
+    bool NskCrate::handleSetPagesCount(Request &req, Response &resp) {
+        Json::Value root;
+        MulticastBuilder mcast(m_adcs, "setPagesCount", this);
+        mcast.addField("pagesCount", req.m_json["pagesCount"].asUInt());
+        localMultiRequest(mcast.getReqs(), mcast.getResps());
+        root["status"] = "success";
+        resp = root;
+        return true;
+    }
+
+    bool NskCrate::handleSoftStart(Request &req, Response &resp) {
+        Json::Value root;
+        MulticastBuilder mcast(m_adcs, "softStart", this);
+        localMultiRequest(mcast.getReqs(), mcast.getResps());
+        root["status"] = "success";
+        resp = root;
+        return true;
+    }
+
+    bool NskCrate::handleWaitForTrigger(Request &req, Response &resp) {
+        Json::Value root;
+        MulticastBuilder mcast(m_adcs, "waitForTrigger", this);
+        localMultiRequest(mcast.getReqs(), mcast.getResps());
+        root["status"] = "success";
+        resp = root;
+        return true;
+    }
+
+    bool NskCrate::handleCalibration(Request &req, Response &resp) {
+        Json::Value root;
+        MulticastBuilder mcast(m_adcs, "calibrate", this);
+        localMultiRequest(mcast.getReqs(), mcast.getResps());
+        root["status"] = "success";
+        resp = root;
+        return true;
+    }
+
+    bool NskCrate::handleDownloadData(Request &req, Response &resp) {
+        Json::Value root;
+        MulticastBuilder mcast(m_adcs, "downloadData", this);
+        localMultiRequest(mcast.getReqs(), mcast.getResps());
+
+        int i = 0;
+        for (auto lresp: mcast.getResps()) {
+            root["data"][i] = lresp.m_json["data"][0];
+            i++;
+        }
+
+        root["status"] = "success";
+        root["xincr"] = 1;
+        resp = root;
+        return true;
+    }
+
+    bool NskCrate::handleSetOffset(Request &req, Response &resp) {
+        Json::Value root;
+        MulticastBuilder mcast(m_adcs, "calibrate", this);
+        mcast.addField("offset", req.m_json["offset"].asUInt());
+        localMultiRequest(mcast.getReqs(), mcast.getResps());
+        root["status"] = "success";
+        resp = root;
+        return true;
+    }
+
+    bool NskCrate::handlePing(Request &req, Response &resp) {
+        Json::Value root;
+        MulticastBuilder mcast(m_adcs, "ping", this);
+        localMultiRequest(mcast.getReqs(), mcast.getResps());
+
+        int i = 0;
+        for (auto lresp: mcast.getResps()) {
+            root["data"][i] = lresp.m_json["data"];
+            i++;
+        }
+
+        root["status"] = "success";
+        resp = root;
+        return true;
+    }
+
+    bool NskCrate::handleGetAdcsList(Request &req, Response &resp) {
+        Json::Value root;
+
+        int i = 0;
+        for (auto adc: m_adcs) {
+            root["adcs"][i] = adc;
+            i++;
+        }
+
+        root["status"] = "success";
+        resp = root;
+        return true;
+    }
 }
+

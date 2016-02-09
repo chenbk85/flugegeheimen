@@ -30,7 +30,6 @@ namespace Flug {
 
 		void popMessages();
 
-
 		void performRead();
 
 		void performWrite();
@@ -43,6 +42,7 @@ namespace Flug {
 		std::list<std::string> m_inbox;
 		std::list<std::string> m_outbox;
 		size_t m_outputPtr;
+        size_t m_ballance;
 
 	private:
 	};

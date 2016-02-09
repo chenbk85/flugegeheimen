@@ -15,6 +15,7 @@ namespace Flug {
 		virtual bool initModule () = 0;
 		virtual bool destroyModule () = 0;
 		virtual bool handleRequest (Request & req, Response & resp) = 0;
+        virtual bool rebootModule () = 0;
 
 		Module () = delete;
 		Module (const std::string & configName);

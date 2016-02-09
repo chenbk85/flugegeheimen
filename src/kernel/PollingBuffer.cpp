@@ -10,24 +10,24 @@ static const size_t BufSize = 1024 * 10;
 namespace Flug {
 
 	PollingBuffer::PollingBuffer(int sock)
-			: m_socket(sock) {
+			: m_socket(sock), m_ballance(0) {
 	}
 
 	PollingBuffer::~PollingBuffer() {
 	}
 
 	void PollingBuffer::performTransimission(uint32_t event) {
-		if (event & EPOLLIN) {
+        if (event & EPOLLOUT && m_outputData.size() != 0) {
+            std::cout << "#Writing data" << std::endl;
+            performWrite();
+        }
+
+        pushMessages();
+        popMessages();
+
+        if (m_ballance == 0 && (event & EPOLLIN)) {
 			std::cout << "#Reading data" << std::endl;
 			performRead();
-		}
-
-		popMessages();
-		pushMessages();
-
-		if (event & EPOLLOUT && m_outputData.size() != 0) {
-			std::cout << "#Writing data" << std::endl;
-			performWrite();
 		}
 
 	}
@@ -80,6 +80,9 @@ namespace Flug {
 					//throw std::runtime_error("Disconnected!");
 				}
 				m_outputData.erase(m_outputData.begin(), m_outputData.begin() + sent);
+                if (m_outputData.size() == 0) {
+                    m_ballance = 0;
+                }
 			}
 		}
 	}
@@ -88,14 +91,16 @@ namespace Flug {
 		uint32_t msgSize;
 		if (m_inputData.size() >= 4) {
 			msgSize = *(reinterpret_cast<uint32_t *>(m_inputData.data()));
-		} else {
+            if (m_inputData.size() >= (sizeof(uint32_t) + msgSize)) {
+                m_ballance = 1;
+                return true;
+            } else {
+                return false;
+            }
+        } else {
 			return false;
 		}
-		if (m_inputData.size() >= (sizeof(uint32_t) + msgSize)) {
-			return true;
-		} else {
-			return false;
-		}
+
 	}
 
 	void PollingBuffer::popMessages() {

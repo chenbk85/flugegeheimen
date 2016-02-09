@@ -57,4 +57,7 @@ namespace Flug {
         return true;
     }
 
+    bool ArchiveModule::rebootModule() {
+        return false;
+    }
 }

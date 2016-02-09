@@ -19,6 +19,7 @@ namespace Flug {
 		virtual bool initModule ();
 		virtual bool destroyModule ();
 		virtual bool handleRequest (Request & req, Response & resp);
+        virtual bool rebootModule ();
 
 		const std::string & getDeviceName ();
 		const std::string & getDeviceType ();

@@ -26,4 +26,8 @@ namespace Flug {
 		resp = root;
 		return true;
 	}
+
+    bool MonitorModule::rebootModule() {
+        return false;
+    }
 }

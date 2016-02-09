@@ -26,6 +26,14 @@ namespace Flug {
 
     protected:
         bool handleGetData (Request & req, Response & resp);
+        bool handleSetPagesCount (Request & req, Response & resp);
+        bool handleWaitForTrigger (Request & req, Response & resp);
+        bool handleSoftStart (Request & req, Response & resp);
+        bool handleCalibration (Request & req, Response & resp);
+        bool handleDownloadData (Request & req, Response & resp);
+        bool handleSetOffset (Request & req, Response & resp);
+        bool handlePing (Request & req, Response & resp);
+        bool handleGetAdcsList(Request &req, Response &resp);
 
         std::vector<std::string> m_adcs;
     };

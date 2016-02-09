@@ -16,7 +16,7 @@ namespace Flug {
 
         ArchiveModule() = delete;
 
-        ArchiveModule(InterlockedArchiveBackend * backend);
+        ArchiveModule(InterlockedArchiveBackend *backend);
 
         virtual ~ArchiveModule();
 
@@ -24,15 +24,17 @@ namespace Flug {
 
         virtual bool destroyModule();
 
+        virtual bool rebootModule();
+
         virtual bool handleRequest(Request &req, Response &resp);
 
-        virtual bool loadConfig (Json::Value & config);
+        virtual bool loadConfig(Json::Value &config);
 
     protected:
 
-        bool handleQuery (Request &req, Response &resp);
+        bool handleQuery(Request &req, Response &resp);
 
-        InterlockedArchiveBackend * m_backend;
+        InterlockedArchiveBackend *m_backend;
 
     };
 }
