@@ -12,7 +12,7 @@
   "scripts": [
     {
       "name": "PythonModule",
-      "script": "res/test.py",
+      "script": "scripts/PythonModule.py",
       "lang": "python"
     }
   ],

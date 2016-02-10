@@ -2,8 +2,7 @@
 // Created by user on 13.10.15.
 //
 
-#ifndef PROJECT_CONFIGURABLE_H
-#define PROJECT_CONFIGURABLE_H
+#pragma once
 
 
 namespace Flug {
@@ -26,4 +25,3 @@ namespace Flug {
 }
 
 
-#endif //PROJECT_CONFIGURABLE_H
