@@ -56,7 +56,6 @@ namespace Flug {
         }
         ScriptModule *task = m_langs[lang]->buildModule(name);
         task->loadScript(script);
-        task->initModule();
         task->start();
         registerTask(task, name);
         return task;

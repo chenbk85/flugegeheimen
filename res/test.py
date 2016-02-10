@@ -1,11 +1,16 @@
 __author__ = 'user'
 
+import json
 
-def test():
-	print ("PYTHON MODULE WORKS!");
 
-def callable(str):
-	print ("Handling a request with python..");
-	return 'returned ' + str
+def InitModule():
+	print ("PYTHON MODULE WORKS!")
+	q = Foo()
+	q.func()
 
-test()
+def HandleRequest(s):
+	req = json.loads(s)
+	req['asdf'] = 'asdfas'
+	return json.dumps(req)
+
+InitModule()

@@ -11,13 +11,8 @@
 
   "scripts": [
     {
-      "name": "test",
+      "name": "PythonModule",
       "script": "res/test.py",
-      "lang": "python"
-    },
-    {
-      "name": "test2",
-      "script": "res/test2.py",
       "lang": "python"
     }
   ],
@@ -37,21 +32,21 @@
       "config": {
         "devices": ["TrashyDevice1","TrashyDevice2"]
       }
-    },
+    }
     /*{"device":"MSO9254A","driver":"AgilentOscope",
         "config": {
             "addr":"172.16.13.238",
             "port":"5025"
         }
     }*/
-    {"device":"Timer1","driver":"NskTimer",
+    /*{"device":"Timer1","driver":"NskTimer",
         "config": {
             "channelsNumber":8,
             "delays": [0, 0, 0, 0, 0, 0, 0, 0],
             "addr":"192.168.0.93",
             "port":"2001"
         }
-    },
+    },*/
     /*{"device":"SlowAdc","driver":"NskSlowAdc",
         "config": {
             "addr": "192.168.0.114",
@@ -62,7 +57,7 @@
             "highVoltage": true
         }
     },*/
-    {"device":"FastAdc41","driver":"NskFastAdc",
+    /*{"device":"FastAdc41","driver":"NskFastAdc",
       "config": {
         "addr": "192.168.0.41",
         "controlPort": "2001",
@@ -115,7 +110,7 @@
         "devices": ["FastAdc41","FastAdc42","FastAdc43",
           "FastAdc44","FastAdc46","FastAdc49"]
       }
-    }
+    }*/
 
   ]
 }

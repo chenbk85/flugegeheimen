@@ -26,6 +26,8 @@ namespace Flug {
         virtual void loadScript (const std::string & path);
 
         std::string parsePythonException ();
+
+        std::string pyLocalRequest (const std::string & req);
     protected:
     private:
         std::string m_scriptPath;

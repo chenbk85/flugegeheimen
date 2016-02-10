@@ -11,7 +11,7 @@ set (FLUG_SOURCES src/main.cpp src/kernel/kernel.cpp src/helpers/socket.cpp src/
         src/kernel/DeviceProxy.cpp src/kernel/DeviceProxy.h src/kernel/DeviceCache.cpp src/kernel/DeviceCache.h
         src/kernel/Intercom.cpp src/kernel/Intercom.h src/devices/NskCrate.cpp src/devices/NskCrate.h
         src/kernel/LocalDispatcher.cpp src/kernel/LocalDispatcher.h src/devices/DummyCrate.cpp src/devices/DummyCrate.h
-        src/kernel/PythonModule.cpp src/kernel/PythonModule.h src/kernel/MulticastBuilder.cpp src/kernel/MulticastBuilder.h src/kernel/ScriptModule.cpp src/kernel/ScriptModule.h src/kernel/SchedulerModule.cpp src/kernel/SchedulerModule.h)
+        src/kernel/PythonModule.cpp src/kernel/PythonModule.h src/kernel/MulticastBuilder.cpp src/kernel/MulticastBuilder.h src/kernel/ScriptModule.cpp src/kernel/ScriptModule.h src/kernel/SchedulerModule.cpp src/kernel/SchedulerModule.h src/kernel/PythonContext.cpp src/kernel/PythonContext.h src/kernel/ModulesTable.cpp src/kernel/ModulesTable.h)
 
 set(Boost_USE_STATIC_LIBS        ON)
 set(Boost_USE_MULTITHREADED      ON)

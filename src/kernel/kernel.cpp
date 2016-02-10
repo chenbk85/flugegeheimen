@@ -15,8 +15,6 @@ namespace Flug {
     static const int MaxEventsNo = 10;
 
     Kernel::Kernel() {
-        Py_Initialize();
-
         m_archBackend = new InterlockedArchiveBackend();
         m_devmgr = new DeviceManager();
         m_remoteDispatcher = new RemoteDispatcher();
@@ -35,6 +33,7 @@ namespace Flug {
 
     Kernel::~Kernel() {
         m_gateway.disconnect();
+
     }
 
     void Kernel::registerModules() {

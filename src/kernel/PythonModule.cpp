@@ -3,9 +3,23 @@
 //
 
 #include "../stdafx.h"
+#include "PythonContext.h"
 #include "PythonModule.h"
 
+
+#define FG_REQUEST_HANDLER "HandleRequest"
+
+
+class Foo {
+public:
+    static void testStaticFunc() {
+        std::cout << "STATIC FUNCTION WORKS!" << std::endl;
+    }
+};
+
+
 namespace  Flug {
+
 
 
     PythonModule::PythonModule(const std::string &configName) :
@@ -14,16 +28,29 @@ namespace  Flug {
     }
 
     bool PythonModule::initModule() {
-        boost::python::api::object main_module = boost::python::import("__main__");
-        boost::python::api::object global(main_module.attr("__dict__"));
+
+        PythonContext & ctx = PythonContext::getInstance();
+
         try {
-            boost::python::exec_file(m_scriptPath.c_str(), global, global);
+            boost::python::object foo_class = boost::python::class_<Foo>("Foo")
+                    .def("func", &Foo::testStaticFunc,
+                         boost::python::return_value_policy<boost::python::manage_new_object>())
+                    .staticmethod("func")  // **
+                    ;
+
+            PyObject * dictPtr = ctx.getNamespace().ptr();
+            PyDict_SetItemString(dictPtr, "Foo", foo_class.ptr());
+
+            boost::python::exec_file(m_scriptPath.c_str(), ctx.getNamespace(), ctx.getNamespace());
         } catch (const boost::python::error_already_set & ex) {
             PyErr_Print();
         }
+
+        return true;
     }
 
     bool PythonModule::destroyModule() {
+        return true;
     }
 
 
@@ -37,11 +64,11 @@ namespace  Flug {
 
         boost::python::object main_module = boost::python::import("__main__");
         boost::python::object global(main_module.attr("__dict__"));
-        boost::python::object handlingFunction = global["callable"];
+        boost::python::object handlingFunction = global[FG_REQUEST_HANDLER];
         boost::python::object respPtr;
 
         try {
-             respPtr = handlingFunction(pyReq);
+            respPtr = handlingFunction(pyReq);
         } catch (const boost::python::error_already_set & ex) {
             PyErr_Print();
         }
@@ -96,4 +123,16 @@ namespace  Flug {
         }
         return ret;
     }
+
+    std::string PythonModule::pyLocalRequest(const std::string &reqStr) {
+        Request req(reqStr, this);
+        Response resp;
+
+        localRequest(req, resp);
+
+        return resp.m_string;
+    }
 }
+
+
+
