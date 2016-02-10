@@ -46,6 +46,8 @@ namespace Flug {
 
         bool hasModule(const std::string &request);
 
+        Module * getModule (const std::string & name);
+
     protected:
     private:
         std::map<std::string, HandlerRecord> m_modules;

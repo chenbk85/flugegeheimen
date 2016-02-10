@@ -31,18 +31,19 @@ namespace Flug {
         bool popLocalResponse(Response &resp);
         bool pushLocalResponse(Response &resp);
 
-
-
 		bool handleRequestWraper (Request & req, Response & resp);
-	protected:
+
+        void localRequest (Request &req, Response &resp);
+        void localMultiRequest (std::vector<Request> &reqs,
+                                std::vector<Response> &resps);
+
+
+    protected:
 		//There I wanna have something like two (incoming & outgoing)
 		//spsc message queues
 		void moduleProc ();
 		void mainLoop ();
 		void handleIncomingRequests ();
-        void localRequest (Request &req, Response &resp);
-        void localMultiRequest (std::vector<Request> &reqs,
-                                std::vector<Response> &resps);
 
 		bool m_quitState;
 

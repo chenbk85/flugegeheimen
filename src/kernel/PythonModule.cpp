@@ -4,26 +4,40 @@
 
 #include "../stdafx.h"
 #include "PythonContext.h"
+#include "ModulesTable.h"
+#include "LocalDispatcher.h"
 #include "PythonModule.h"
 
 
 #define FG_REQUEST_HANDLER "HandleRequest"
 
-
-class Foo {
-public:
-    static void testStaticFunc() {
-        std::cout << "STATIC FUNCTION WORKS!" << std::endl;
-    }
-};
-
-
 namespace  Flug {
 
+    class PythonExported {
+    public:
+        static std::string LocalRequest(const std::string & request, const std::string & sender) {
+            std::cout << "Handling python local request from " << sender << std::endl;
+            std::cout << request << std::endl;
 
+            //ModulesTable & modTbl = ModulesTable::getInstance();
+            //Module * senderMod = modTbl.getLocalModule(sender);
+            Module * senderMod = LocalDispatcherPtr::get().getPointer()->getModule(sender);
+
+            if (!senderMod) {
+                throw std::runtime_error("Can't find the " + sender + " module (snder)");
+            }
+
+            Request req(request, senderMod);
+            Response resp;
+
+            senderMod->localRequest(req, resp);
+
+            return resp.m_string;
+        }
+    };
 
     PythonModule::PythonModule(const std::string &configName) :
-    ScriptModule(configName){
+    ScriptModule(configName) {
 
     }
 
@@ -32,15 +46,6 @@ namespace  Flug {
         PythonContext & ctx = PythonContext::getInstance();
 
         try {
-            boost::python::object foo_class = boost::python::class_<Foo>("Foo")
-                    .def("func", &Foo::testStaticFunc,
-                         boost::python::return_value_policy<boost::python::manage_new_object>())
-                    .staticmethod("func")  // **
-                    ;
-
-            PyObject * dictPtr = ctx.getNamespace().ptr();
-            PyDict_SetItemString(dictPtr, "Foo", foo_class.ptr());
-
             boost::python::exec_file(m_scriptPath.c_str(), ctx.getNamespace(), ctx.getNamespace());
         } catch (const boost::python::error_already_set & ex) {
             PyErr_Print();
@@ -62,9 +67,16 @@ namespace  Flug {
         boost::python::str pyReq = req.m_string.c_str();
         boost::python::str pyResp;
 
-        boost::python::object main_module = boost::python::import("__main__");
-        boost::python::object global(main_module.attr("__dict__"));
-        boost::python::object handlingFunction = global[FG_REQUEST_HANDLER];
+        PythonContext & ctx = PythonContext::getInstance();
+        boost::python::object ModuleProxy = boost::python::class_<PythonExported>("Module")
+                .def("LocalRequest", &PythonExported::LocalRequest,
+                     boost::python::return_value_policy<boost::python::return_by_value>())
+                .staticmethod("LocalRequest")  // **
+        ;
+
+        PyObject * dictPtr = ctx.getNamespace().ptr();
+        PyDict_SetItemString(dictPtr, "Module", ModuleProxy.ptr());
+        boost::python::object handlingFunction = ctx.getNamespace()[FG_REQUEST_HANDLER];
         boost::python::object respPtr;
 
         try {

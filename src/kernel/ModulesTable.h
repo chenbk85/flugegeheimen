@@ -13,13 +13,16 @@ class RemoteDispatcher;
 class ModulesTable {
 public:
     virtual ~ModulesTable();
-    ModulesTable & getInstance();
+    static ModulesTable & getInstance();
     void setLocalDispatcherPtr (LocalDispatcher * ptr);
     void setRemoteDispatcherPtr (RemoteDispatcher * ptr);
+
+    Module * getLocalModule (const std::string & modName);
 
 private:
     LocalDispatcher * m_local;
     RemoteDispatcher * m_remote;
+    ModulesTable();
 };
 }
 

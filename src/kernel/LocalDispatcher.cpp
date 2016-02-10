@@ -70,4 +70,11 @@ namespace  Flug {
     }
 
 
+    Module *LocalDispatcher::getModule(const std::string &name) {
+        //if (hasModule(name)) {
+            return m_modules[name].m_module;
+        //} else {
+        //    return nullptr;
+        //}
+    }
 }

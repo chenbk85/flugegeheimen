@@ -5,12 +5,12 @@ import json
 
 def InitModule():
 	print ("PYTHON MODULE WORKS!")
-	q = Foo()
-	q.func()
 
 def HandleRequest(s):
 	req = json.loads(s)
-	req['asdf'] = 'asdfas'
-	return json.dumps(req)
+	subr = {'reqtype': 'getDataSync', 'subsystem': 'DummyCrate1'}
+	subreq = json.dumps(subr)
+	mod = Module()
+	return mod.LocalRequest(subreq, 'PythonModule')
 
 InitModule()
