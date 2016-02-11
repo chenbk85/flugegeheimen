@@ -15,7 +15,7 @@ namespace Flug {
     static const int MaxEventsNo = 10;
 
     Kernel::Kernel() {
-        m_archBackend = new InterlockedArchiveBackend();
+        m_archBackend = new ArchiveBackend();
         m_devmgr = new DeviceManager();
         m_remoteDispatcher = new RemoteDispatcher();
         m_localDispatcher = new LocalDispatcher();

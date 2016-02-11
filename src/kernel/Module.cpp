@@ -62,7 +62,7 @@ namespace Flug {
             m_inQueueCounter--;
             try {
                 if (!handleRequestWraper(request, response)) {
-                    root["staus"] = "error";
+                    root["status"] = "error";
                     root["description"] = "Request handler returned false";
                     response = root;
                     std::cout << response.m_string << std::endl;
@@ -80,7 +80,7 @@ namespace Flug {
             m_inQueueCounter--;
             try {
                 if (!handleRequestWraper(request, response)) {
-                    root["staus"] = "error";
+                    root["status"] = "error";
                     root["description"] = "Request handler returned false";
                     response = root;
                     std::cout << response.m_string << std::endl;

@@ -8,7 +8,7 @@
 #include "Module.h"
 #include "JsonBson.h"
 #include "MongoClient.h"
-#include "InterlockedArchiveBackend.h"
+#include "ArchiveBackend.h"
 
 namespace Flug {
     class ArchiveModule : public Module {
@@ -16,7 +16,7 @@ namespace Flug {
 
         ArchiveModule() = delete;
 
-        ArchiveModule(InterlockedArchiveBackend *backend);
+        ArchiveModule(ArchiveBackend *backend);
 
         virtual ~ArchiveModule();
 
@@ -32,9 +32,17 @@ namespace Flug {
 
     protected:
 
-        bool handleQuery(Request &req, Response &resp);
+        std::string getDatastoreName (const std::string & name);
 
-        InterlockedArchiveBackend *m_backend;
+        bool handleFindUnique(Request &req, Response &resp);
+
+        bool handleGetDatastoresList(Request &req, Response &resp);
+
+        bool handleRegisterDatastore(Request &req, Response &resp);
+
+        bool handleInsert(Request &req, Response &resp);
+
+        ArchiveBackend *m_backend;
 
     };
 }

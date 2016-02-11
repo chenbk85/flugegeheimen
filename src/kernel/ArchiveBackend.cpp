@@ -3,26 +3,23 @@
 //
 
 #include "../stdafx.h"
-#include "InterlockedArchiveBackend.h"
+#include "ArchiveBackend.h"
 
 
 #define DB_COLL_DBINFO "dbinfo"
 #define DB_INFO_SECTION "dbInfoSection"
 #define DB_INFO_DEVICES_LIST "devicesList"
-
-#define ARCH_LOCK_MACRO int asdfaskjdhflasd = 9 //std::lock_guard<std::mutex> __lk(m_lock)
+#define DB_INFO_DATASTORES_LIST "datastoresList"
 
 namespace Flug {
 
-
-
-    InterlockedArchiveBackend::InterlockedArchiveBackend() {
+    ArchiveBackend::ArchiveBackend() {
     }
 
-    InterlockedArchiveBackend::~InterlockedArchiveBackend() {
+    ArchiveBackend::~ArchiveBackend() {
     }
 
-    void InterlockedArchiveBackend::setupCollections() {
+    void ArchiveBackend::setupCollections() {
         addCollection(DB_COLL_DBINFO);
         Json::Value req;
         JsonBson data;
@@ -33,9 +30,16 @@ namespace Flug {
             req["devices"] = JsonBson(std::string("[]"));
             insert(DB_COLL_DBINFO, req);
         }
+        req[DB_INFO_SECTION] = DB_INFO_DATASTORES_LIST;
+        try {
+            findUnique(DB_COLL_DBINFO, req, data);
+        } catch (std::runtime_error & err) {
+            req["datastores"] = JsonBson(std::string("[]"));
+            insert(DB_COLL_DBINFO, req);
+        }
     }
 
-    bool InterlockedArchiveBackend::checkDeviceHasArchive(const std::string &device, const std::string &devtype) {
+    bool ArchiveBackend::checkDeviceHasArchive(const std::string &device, const std::string &devtype) {
         updateArchiveDevicesList();
         for (auto dev: m_deviceArchives) {
             if (dev.m_name == device && dev.m_type == devtype) {
@@ -45,7 +49,7 @@ namespace Flug {
         return false;
     }
 
-    bool InterlockedArchiveBackend::updateArchiveDevicesList() {
+    bool ArchiveBackend::updateArchiveDevicesList() {
         Json::Value req;
         req[DB_INFO_SECTION] = DB_INFO_DEVICES_LIST;
 
@@ -63,11 +67,11 @@ namespace Flug {
         return true;
     }
 
-    std::string InterlockedArchiveBackend::getDeviceArchName(const std::string &device, const std::string &devType) {
+    std::string ArchiveBackend::getDeviceArchName(const std::string &device, const std::string &devType) {
         return std::string("devarch_" + devType + "_" + device);
     }
 
-    void InterlockedArchiveBackend::addDeviceArchive(const std::string &device, const std::string &devtype) {
+    void ArchiveBackend::addDeviceArchive(const std::string &device, const std::string &devtype) {
         if (checkDeviceHasArchive(device, devtype)) {
             return;
         }
@@ -85,8 +89,7 @@ namespace Flug {
     }
 
 
-    void InterlockedArchiveBackend::connect() {
-        ARCH_LOCK_MACRO;
+    void ArchiveBackend::connect() {
         std::cout << "Connecting to database" <<
                 " uri: " << m_mongoUri <<
                 " dbname: " << m_dbname <<
@@ -96,50 +99,42 @@ namespace Flug {
         setupCollections();
     }
 
-    void InterlockedArchiveBackend::updateCollectionsList() {
-        ARCH_LOCK_MACRO;
+    void ArchiveBackend::updateCollectionsList() {
         m_client.updateCollectionsList();
     }
 
-    bool InterlockedArchiveBackend::hasCollection(const std::string &collection) {
-        ARCH_LOCK_MACRO;
+    bool ArchiveBackend::hasCollection(const std::string &collection) {
         return m_client.hasCollection(collection);
     }
 
-    void InterlockedArchiveBackend::addCollection(const std::string &collection) {
-        ARCH_LOCK_MACRO;
+    void ArchiveBackend::addCollection(const std::string &collection) {
         m_client.addCollection(collection);
     }
 
-    void InterlockedArchiveBackend::insert(const std::string &collection, const JsonBson &document) {
-        ARCH_LOCK_MACRO;
+    void ArchiveBackend::insert(const std::string &collection, const JsonBson &document) {
         m_client.insert(collection, document);
     }
 
 
-    void InterlockedArchiveBackend::updateUnique(const std::string &collection, const JsonBson &search,
-                                                 const JsonBson &update, bool upsert) {
-        ARCH_LOCK_MACRO;
+    void ArchiveBackend::updateUnique(const std::string &collection, const JsonBson &search,
+                                      const JsonBson &update, bool upsert) {
         m_client.updateUnique(collection, search, update, upsert);
 
     }
 
-    void InterlockedArchiveBackend::findUnique(const std::string &collection, const JsonBson &search,
-                                               JsonBson &result) {
-        ARCH_LOCK_MACRO;
+    void ArchiveBackend::findUnique(const std::string &collection, const JsonBson &search,
+                                    JsonBson &result) {
         m_client.findUnique(collection, search, result);
 
     }
 
-    void InterlockedArchiveBackend::disconnect() {
-        ARCH_LOCK_MACRO;
+    void ArchiveBackend::disconnect() {
         m_client.disconnect();
     }
 
-    void InterlockedArchiveBackend::setDbCredentials(const std::string &addr, const std::string &db,
-                                                     const std::string &user, const std::string &pass) {
+    void ArchiveBackend::setDbCredentials(const std::string &addr, const std::string &db,
+                                          const std::string &user, const std::string &pass) {
 
-        ARCH_LOCK_MACRO;
         m_mongoUri = addr;
         m_dbname = db;
         m_user = user;

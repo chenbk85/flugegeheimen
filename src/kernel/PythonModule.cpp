@@ -45,6 +45,14 @@ namespace  Flug {
 
         PythonContext &ctx = PythonContext::getInstance();
 
+        boost::python::object ModuleProxy = boost::python::class_<PythonExported>("Module")
+                .def("LocalRequest", &PythonExported::LocalRequest,
+                     boost::python::return_value_policy<boost::python::return_by_value>())
+                .staticmethod("LocalRequest")  // **
+        ;
+
+        PyObject *dictPtr = ctx.getNamespace().ptr();
+        PyDict_SetItemString(dictPtr, "Module", ModuleProxy.ptr());
         try {
             boost::python::exec_file(m_scriptPath.c_str(), ctx.getNamespace(), ctx.getNamespace());
         } catch (const boost::python::error_already_set &ex) {

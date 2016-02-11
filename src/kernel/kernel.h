@@ -9,7 +9,7 @@
 #include "MonitorModule.h"
 #include "ArchiveModule.h"
 #include "DeviceBuilder.h"
-#include "InterlockedArchiveBackend.h"
+#include "ArchiveBackend.h"
 #include "SchedulerModule.h"
 
 
@@ -53,7 +53,7 @@ namespace Flug {
         ArchiveModule *m_archive;
         MonitorModule *m_monitor;
         DeviceBuilder *m_deviceBuilder;
-        InterlockedArchiveBackend *m_archBackend;
+        ArchiveBackend *m_archBackend;
         SchedulerModule *m_scheduler;
 
     };

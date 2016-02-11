@@ -18,7 +18,7 @@
   ],
 
   "devices": [
-    {
+    /*{
       "device": "TrashyDevice1",
       "driver": "DummyDevice"
     },
@@ -32,7 +32,7 @@
       "config": {
         "devices": ["TrashyDevice1","TrashyDevice2"]
       }
-    }
+    }*/
     /*{"device":"MSO9254A","driver":"AgilentOscope",
         "config": {
             "addr":"172.16.13.238",
@@ -57,7 +57,7 @@
             "highVoltage": true
         }
     },*/
-    /*{"device":"FastAdc41","driver":"NskFastAdc",
+    {"device":"FastAdc41","driver":"NskFastAdc",
       "config": {
         "addr": "192.168.0.41",
         "controlPort": "2001",
@@ -110,7 +110,7 @@
         "devices": ["FastAdc41","FastAdc42","FastAdc43",
           "FastAdc44","FastAdc46","FastAdc49"]
       }
-    }*/
+    }
 
   ]
 }

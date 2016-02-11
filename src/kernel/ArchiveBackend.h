@@ -11,12 +11,12 @@
 #include "MongoClient.h"
 
 namespace Flug {
-    class InterlockedArchiveBackend {
+    class ArchiveBackend {
     public:
 
-        InterlockedArchiveBackend();
+        ArchiveBackend();
 
-        virtual ~InterlockedArchiveBackend();
+        virtual ~ArchiveBackend();
 
         struct DeviceInfo {
             std::string m_name;
