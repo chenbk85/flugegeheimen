@@ -8,7 +8,7 @@ DatastoreName = 'datastore_' + ArchiveName
 CrateModule = 'NskCrate1'
 
 def GetDate():
-	return time.strftime("%d-%m-%Y")
+	return time.strftime("%Y-%m-%d")
 def GetTime():
 	return time.strftime("%H:%M:%S")
 

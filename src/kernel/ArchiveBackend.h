@@ -40,10 +40,17 @@ namespace Flug {
 
         void insert(const std::string &collection, const JsonBson &document);
 
-        void updateUnique(const std::string &collection, const JsonBson &search, const JsonBson &update,
-                          bool upsert = true);
+        void updateUnique(const std::string &collection, const JsonBson &search,
+                          const JsonBson &update, bool upsert = true);
 
-        void findUnique(const std::string &collection, const JsonBson &search, JsonBson &result);
+        void findUnique(const std::string &collection, const JsonBson &search,
+                        JsonBson &result);
+
+        void find(const std::string & collection, const JsonBson &search,
+                  const JsonBson &fields, std::list<JsonBson> &result);
+
+        void find(const std::string & collection, const JsonBson &search,
+                  std::list<JsonBson> &result);
 
         void setupCollections();
 

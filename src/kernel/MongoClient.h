@@ -31,7 +31,8 @@ namespace Flug {
 
         void findUnique(const std::string &collection, const JsonBson &search, JsonBson &result);
 
-        void find(const std::string &collection, const JsonBson &search, std::list<JsonBson> &results);
+        void find(const std::string &collection, const JsonBson &search,
+                  std::list<JsonBson> &results, const JsonBson *fields = NULL);
 
     protected:
 

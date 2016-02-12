@@ -42,6 +42,8 @@ namespace Flug {
 
         bool handleInsert(Request &req, Response &resp);
 
+        bool handleFind (Request &req, Response &resp);
+
         ArchiveBackend *m_backend;
 
     };

@@ -47,6 +47,8 @@ namespace Flug {
             return handleRegisterDatastore(req, resp);
         } else if (reqtype == "insert") {
             return handleInsert(req, resp);
+        } else if (reqtype == "find") {
+            return handleFind (req, resp);
         }
         return false;
     }
@@ -107,6 +109,28 @@ namespace Flug {
         std::string collection = req.m_json["datastore"].asString();
 
         m_backend->insert(collection, req.m_json["data"]);
+
+        root["status"] = "success";
+        resp = root;
+        return true;
+    }
+
+    bool ArchiveModule::handleFind(Request &req, Response &resp) {
+        Json::Value root;
+        std::string collection = req.m_json["datastore"].asString();
+        JsonBson fields;
+        std::list<JsonBson> res;
+        bool hasFields = true;
+
+        fields = req.m_json["fields"];
+
+        m_backend->find(collection, req.m_json["search"], fields, res);
+
+        int i = 0;
+        for (auto val: res) {
+            root["data"][i] = val;
+            i++;
+        }
 
         root["status"] = "success";
         resp = root;

@@ -141,5 +141,19 @@ namespace Flug {
         m_pass = pass;
 
     }
+
+    void ArchiveBackend::find(const std::string &collection, const JsonBson &search,
+                              const JsonBson &fields,
+                              std::list<JsonBson> &result) {
+
+        m_client.find(collection, search, result, &fields);
+
+    }
+
+    void ArchiveBackend::find(const std::string &collection, const JsonBson &search,
+                              std::list<JsonBson> &result) {
+
+        m_client.find(collection, search, result);
+    }
 }
 

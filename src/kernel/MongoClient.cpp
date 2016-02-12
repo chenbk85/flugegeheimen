@@ -89,15 +89,42 @@ namespace Flug {
             throw std::runtime_error("No such collection " + collection);
         }
 
-        std::shared_ptr<mongo::DBClientCursor> cursor = m_connection.query(m_db + "." + collection,
-                                                                           mongo::Query(search));
+        std::shared_ptr<mongo::DBClientCursor> cursor =
+                m_connection.query(m_db + "." + collection,
+                                   mongo::Query(search));
 
         if (cursor->itcount() != 1) {
             std::stringstream ss;
             ss << cursor->itcount();
-            throw std::runtime_error("There is " + ss.str() + " objects matching " + search.str() + " instead of 1");
+            throw std::runtime_error("There is " + ss.str() +
+                                     " objects matching " + search.str() +
+                                     " instead of 1");
         }
 
         m_connection.update(m_db + "." + collection, mongo::Query(search), update, upsert, false);
+    }
+
+    void MongoClient::find(const std::string &collection, const JsonBson &search,
+                           std::list<JsonBson> &results, const JsonBson *fields) {
+        if (!hasCollection(collection)) {
+            throw std::runtime_error("No such collection " + collection);
+        }
+
+        mongo::BSONObj flds = *fields;
+
+        std::shared_ptr<mongo::DBClientCursor> cursor;
+        if (fields) {
+            cursor = m_connection.query(m_db + "." + collection,
+                                        mongo::Query(search), 0, 0, &flds);
+        } else {
+            cursor = m_connection.query(m_db + "." + collection,
+                                        mongo::Query(search));
+        }
+
+        while (cursor->more()) {
+            results.push_back(JsonBson(cursor->next()));
+        }
+
+
     }
 }

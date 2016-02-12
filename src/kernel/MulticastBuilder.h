@@ -37,8 +37,8 @@ namespace Flug {
 
         template<typename T>
         MulticastBuilder &addField(const std::string &name, const T &val) {
-            for (auto req: m_requests) {
-                req.m_json[name] = val;
+            for (int i = 0; i < m_requests.size(); i++) {
+                m_requests[i].m_json[name] = val;
             }
         };
 

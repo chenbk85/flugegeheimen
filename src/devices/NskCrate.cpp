@@ -88,6 +88,7 @@ namespace Flug {
     bool NskCrate::handleSoftStart(Request &req, Response &resp) {
         Json::Value root;
         MulticastBuilder mcast(m_adcs, "softStart", this);
+        mcast.addField("pagesCount", (int) req.m_json["pagesCount"].asInt());
         localMultiRequest(mcast.getReqs(), mcast.getResps());
         root["status"] = "success";
         resp = root;
