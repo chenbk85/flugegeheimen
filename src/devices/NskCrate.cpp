@@ -124,6 +124,12 @@ namespace Flug {
             i++;
         }
 
+        i = 0;
+        for (auto adc: m_adcs) {
+            root["adcs"][i++] = adc;
+        }
+
+
         root["status"] = "success";
         root["xincr"] = 1;
         resp = root;

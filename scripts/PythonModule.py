@@ -2,6 +2,7 @@ import json
 import math
 import time
 
+
 ModuleName = 'PythonModule'
 ArchiveName = 'ThomsonScattering'
 DatastoreName = 'datastore_' + ArchiveName
@@ -11,6 +12,12 @@ def GetDate():
 	return time.strftime("%Y-%m-%d")
 def GetTime():
 	return time.strftime("%H:%M:%S")
+
+def GetAdcsList ():
+	req = {'subsystem': CrateModule,
+		'reqtype': 'getAdcsList'}
+	resp = json.loads(Module().LocalRequest(json.dumps(req), ModuleName))
+	DevicesList = resp['adcs']
 
 def RegisterDatabase():
 	print ("Registering python module datastore")
@@ -30,6 +37,7 @@ def RegisterDatabase():
 
 def InitModule():
 	RegisterDatabase()
+	GetAdcsList()
 
 def ProxySimpleRequest(req, target):
 	req['subsystem'] = target
@@ -68,7 +76,11 @@ DispatchingTable = {
 
 def HandleRequest(s):
 	req = json.loads(s)
-	return DispatchingTable[req['reqtype']](req)
+	if req['reqtype'] in DispatchingTable:
+		return DispatchingTable[req['reqtype']](req)
+	else:
+		return json.dumps({'status': 'error',
+			'description': 'Reqtype is not registered'});
 
 
 InitModule()

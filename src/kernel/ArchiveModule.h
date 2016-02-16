@@ -32,7 +32,7 @@ namespace Flug {
 
     protected:
 
-        std::string getDatastoreName (const std::string & name);
+        std::string getDatastoreName(const std::string &name);
 
         bool handleFindUnique(Request &req, Response &resp);
 
@@ -42,7 +42,11 @@ namespace Flug {
 
         bool handleInsert(Request &req, Response &resp);
 
-        bool handleFind (Request &req, Response &resp);
+        bool handleFind(Request &req, Response &resp);
+
+        bool handleUpdate(Request &req, Response &resp);
+
+        bool handleRemove(Request &req, Response &resp);
 
         ArchiveBackend *m_backend;
 

@@ -47,8 +47,12 @@ namespace Flug {
             return handleRegisterDatastore(req, resp);
         } else if (reqtype == "insert") {
             return handleInsert(req, resp);
+        } else if (reqtype == "update") {
+            return handleUpdate(req, resp);
         } else if (reqtype == "find") {
             return handleFind (req, resp);
+        } else if (reqtype == "remove") {
+            return handleRemove(req, resp);
         }
         return false;
     }
@@ -58,7 +62,7 @@ namespace Flug {
 
         JsonBson result;
         m_backend->findUnique(req.m_json["collection"].asString(),
-                              req.m_json["request"].asString(), result);
+                              JsonBson(req.m_json["request"]), result);
         root["data"] = result;
         root["status"] = "success";
 
@@ -81,6 +85,17 @@ namespace Flug {
         root["data"] = result;
         root["status"] = "success";
 
+        resp = root;
+        return true;
+    }
+
+    bool ArchiveModule::handleUpdate(Request &req, Response &resp) {
+        Json::Value root;
+
+        m_backend->updateUnique(req.m_json["collection"].asString(),
+                JsonBson(req.m_json["search"]), JsonBson(req.m_json["update"]), false);
+
+        root["status"] = "success";
         resp = root;
         return true;
     }
@@ -133,6 +148,20 @@ namespace Flug {
         }
 
         root["status"] = "success";
+        resp = root;
+        return true;
+    }
+
+    bool ArchiveModule::handleRemove(Request &req, Response &resp) {
+        return false;
+        Json::Value root;
+
+        JsonBson result;
+        m_backend->findUnique(req.m_json["collection"].asString(),
+                              JsonBson(req.m_json["request"]), result);
+        root["data"] = result;
+        root["status"] = "success";
+
         resp = root;
         return true;
     }

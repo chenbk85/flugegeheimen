@@ -107,8 +107,8 @@
     },
     {"device":"NskCrate1","driver":"NskCrate",
       "config": {
-        "devices": ["FastAdc41","FastAdc42","FastAdc43",
-          "FastAdc44","FastAdc46","FastAdc49"]
+        "devices": ["FastAdc41","FastAdc42","FastAdc43"]
+          //"FastAdc44","FastAdc46","FastAdc49"]
       }
     }
 
