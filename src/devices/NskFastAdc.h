@@ -56,6 +56,7 @@ namespace  Flug {
         Socket m_infoSock;
         uint16_t m_pagesCount;
 
+	bool m_manual;
         std::string m_addr;
         std::string m_controlPort;
         std::string m_infoPort;
@@ -79,7 +80,9 @@ namespace  Flug {
 
         bool handlePing (Request &req, Response &resp);
 
+	bool handleLoadFirmware (Request & req, Response &resp);
 
+	bool handleGetConfig (Request & req, Response &resp);
 
     };
 

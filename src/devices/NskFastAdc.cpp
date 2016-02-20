@@ -47,21 +47,21 @@ namespace Flug {
         m_controlSock.connect(m_addr, m_controlPort);
         m_pagesCount = 1;
 
-        loadFirmware();
-        clearRegisters();
-        initPll();
+		if (!m_manual) {
+			loadFirmware();
+			clearRegisters();
+			initPll();
 
+			//Calibra
+			writeRegister(0x4, 0x0085);
+			softStart();
 
-        //Calibra
-        writeRegister(0x4, 0x0085);
-        softStart();
-
-
-        sleep(1);
-        dropPage();
-        setOffset(0x800);
-        readDataPage(m_data.data());
-        dropPage();
+			sleep(1);
+			dropPage();
+			setOffset(0x800);
+			readDataPage(m_data.data());
+			dropPage();
+		}
 
         return true;
     }
@@ -77,6 +77,7 @@ namespace Flug {
         m_infoPort = config["infoPort"].asString();
         m_addr = config["addr"].asString();
         m_firmwareLocation = config["firmware"].asString();
+		m_manual = config["manual"].asBool();
 
         std::ifstream file(m_firmwareLocation, std::ios::binary);
         if (!file.is_open()) {
@@ -88,11 +89,21 @@ namespace Flug {
         return true;
     }
 
+	bool NskFastAdc::handleGetConfig (Request &req, Response &resp) {
+		Json::Value root;
+		root["status"] = "success";
+		root["manual"] = m_manual;
+		root["addr"] = m_addr;
+		root["controlPort"] = m_controlPort;
+		root["infoPort"] = m_infoPort;
+		root["firmware"] = m_firmwareLocation;
+	}
+
     bool NskFastAdc::handleRequest(Request &req, Response &resp) {
         std::string reqtype = req.m_json["reqtype"].asString();
 
         if (reqtype == "getData") {
-            return handleGetData(req, resp);
+            return false;//handleGetData(req, resp);
         } else if (reqtype == "setPagesCount") {
             return handleSetPagesCount(req, resp);
         } else if (reqtype == "waitForTrigger") {
@@ -107,10 +118,30 @@ namespace Flug {
             return handleSetOffset (req, resp);
         } else if (reqtype == "ping") {
             return handlePing(req, resp);
-        }
+        } else if (reqtype == "loadFirmware") {
+	    	return handleLoadFirmware(req, resp);
+		} else if (reqtype == "getConfig") {
+			return handleGetConfig (req, resp);
+		}
 
         return false;
     }
+
+	bool NskFastAdc::handleLoadFirmware (Request & req, Response & resp) {
+		Json::Value root;
+		try {
+			loadFirmware();
+			clearRegisters();
+			initPll();
+		} catch (const std::runtime_error & ex) {
+			root["status"] = "error";
+			root["description"] = ex.what();
+			return true;
+		}
+		root["status"] = "success";
+		resp = root;
+		return true;
+	}
 
     void NskFastAdc::loadFirmware() {
         uint32_t fwSize = m_firmware.size();
@@ -153,8 +184,6 @@ namespace Flug {
                 }
             }
         }
-
-
     }
 
     uint16_t NskFastAdc::readRegister(uint8_t reg) {
