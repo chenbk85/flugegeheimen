@@ -1,5 +1,5 @@
 #include "../stdafx.h"
-#include "kernel.h"
+#include "Kernel.h"
 #include "../devices/DummyDevice.h"
 #include "../devices/AgilentOscope.h"
 #include "../devices/NskSlowAdc.h"
@@ -48,13 +48,13 @@ namespace Flug {
     }
 
     void Kernel::registerDrivers() {
-        m_deviceBuilder->registerDeviceDriver<DummyDevice>("DummyDevice");
-        m_deviceBuilder->registerDeviceDriver<AgilentOscope>("AgilentOscope");
-        m_deviceBuilder->registerDeviceDriver<NskSlowAdc>("NskSlowAdc");
-        m_deviceBuilder->registerDeviceDriver<NskFastAdc>("NskFastAdc");
-        m_deviceBuilder->registerDeviceDriver<NskTimer>("NskTimer");
-        m_deviceBuilder->registerDeviceDriver<NskCrate>("NskCrate");
-        m_deviceBuilder->registerDeviceDriver<DummyCrate>("DummyCrate");
+        REGISTER_DEVICE(DummyCrate);
+        REGISTER_DEVICE(DummyDevice);
+        REGISTER_DEVICE(AgilentOscope);
+        REGISTER_DEVICE(NskCrate);
+        REGISTER_DEVICE(NskFastAdc);
+        REGISTER_DEVICE(NskSlowAdc);
+        REGISTER_DEVICE(NskTimer);
     }
 
     void Kernel::registerDevices() {

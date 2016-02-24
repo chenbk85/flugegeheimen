@@ -75,6 +75,14 @@ namespace Flug {
             return m_responses;
         };
 
+        bool getStatus () {
+            for (auto resp: m_responses) {
+                if (resp.m_json["status"] != "success")
+                    return false;
+            }
+            return true;
+        };
+
     protected:
     private:
         MulticastBuilder() = delete;

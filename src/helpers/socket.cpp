@@ -145,7 +145,7 @@ namespace Flug {
 
 		int ret = ::recv(m_sock, data, size, 0);
 		if (ret == -1) {
-			throw std::runtime_error("Failed to send: recv(); returned -1");
+			throw std::runtime_error("Failed to recv: recv(); returned -1");
 		}
 		return (size_t) ret;
 	}

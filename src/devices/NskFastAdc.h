@@ -80,9 +80,11 @@ namespace  Flug {
 
         bool handlePing (Request &req, Response &resp);
 
-	bool handleLoadFirmware (Request & req, Response &resp);
+    	bool handleLoadFirmware (Request & req, Response &resp);
 
-	bool handleGetConfig (Request & req, Response &resp);
+	    bool handleGetConfig (Request & req, Response &resp);
+
+        bool handleReconnect (Request & req, Response &resp);
 
     };
 

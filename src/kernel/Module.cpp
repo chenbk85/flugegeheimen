@@ -118,7 +118,16 @@ namespace Flug {
         resp.m_local = req.m_local;
         resp.m_module = req.m_module;
 
-        bool ret = handleRequest(req, resp);
+        bool ret;
+        try {
+            ret = handleRequest(req, resp);
+        } catch (const std::exception & ex) {
+            resp.m_id = req.m_id;
+            resp.m_pbuf = req.m_pbuf;
+            resp.m_local = req.m_local;
+            resp.m_module = req.m_module;
+            throw;
+        }
 
         resp.m_id = req.m_id;
         resp.m_pbuf = req.m_pbuf;

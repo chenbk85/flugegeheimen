@@ -118,6 +118,8 @@ namespace Flug {
             return handleSetOffset (req, resp);
         } else if (reqtype == "ping") {
             return handlePing(req, resp);
+        } else if (reqtype == "reconnect") {
+            return handleReconnect(req, resp);
         } else if (reqtype == "loadFirmware") {
 	    	return handleLoadFirmware(req, resp);
 		} else if (reqtype == "getConfig") {
@@ -414,6 +416,20 @@ namespace Flug {
         root["status"] = "success";
         JsonBson data = std::string("[]");
         root["data"][0] = (Json::Value)data;
+        resp = root;
+        return true;
+    }
+
+    bool NskFastAdc::handleReconnect(Request &req, Response &resp) {
+        Json::Value root;
+        root["status"] = "success";
+
+        m_controlSock.disconnect();
+        m_infoSock.disconnect();
+
+        m_infoSock.connect(m_addr, m_infoPort);
+        m_controlSock.connect(m_addr, m_controlPort);
+
         resp = root;
         return true;
     }

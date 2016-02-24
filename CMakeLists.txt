@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 2.6)
 
-set (FLUG_SOURCES src/main.cpp src/kernel/kernel.cpp src/helpers/socket.cpp src/helpers/xml.cpp
+set (FLUG_SOURCES src/main.cpp src/kernel/Kernel.cpp src/helpers/socket.cpp src/helpers/xml.cpp
         src/kernel/request_builder.cpp src/kernel/response_parser.cpp src/kernel/pool.cpp src/kernel/PollingBuffer.cpp
         src/devices/DummyDevice.cpp src/kernel/RemoteDispatcher.cpp src/kernel/DeviceManager.cpp src/kernel/Module.cpp
         src/kernel/DeviceDriver.cpp src/kernel/RequestEnumerator.cpp src/devices/AgilentOscope.cpp

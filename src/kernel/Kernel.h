@@ -12,6 +12,8 @@
 #include "ArchiveBackend.h"
 #include "SchedulerModule.h"
 
+#define REGISTER_DEVICE(DEV) \
+    m_deviceBuilder->registerDeviceDriver<DEV>(#DEV)
 
 namespace Flug {
 

@@ -34,6 +34,8 @@ namespace Flug {
         bool handleSetOffset (Request & req, Response & resp);
         bool handlePing (Request & req, Response & resp);
         bool handleGetAdcsList(Request &req, Response &resp);
+        bool handleReconnect(Request &req, Response &resp);
+        bool handleLoadFirmware(Request &req, Response &resp);
 
         std::vector<std::string> m_adcs;
     };

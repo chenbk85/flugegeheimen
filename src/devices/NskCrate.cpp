@@ -46,6 +46,10 @@ namespace Flug {
             return handlePing(req, resp);
         } else if (reqtype == "getAdcsList") {
             return handleGetAdcsList(req, resp);
+        } else if (reqtype == "reconnect") {
+            return handleReconnect(req, resp);
+        } else if (reqtype == "loadFirmware") {
+            return handleLoadFirmware(req, resp);
         }
         return false;
     }
@@ -80,9 +84,15 @@ namespace Flug {
         MulticastBuilder mcast(m_adcs, "setPagesCount", this);
         mcast.addField("pagesCount", req.m_json["pagesCount"].asUInt());
         localMultiRequest(mcast.getReqs(), mcast.getResps());
-        root["status"] = "success";
-        resp = root;
-        return true;
+        if (mcast.getStatus()) {
+            root["status"] = "success";
+            resp = root;
+            return true;
+        } else {
+            root["status"] = "failure";
+            resp = root;
+            return false;
+        }
     }
 
     bool NskCrate::handleSoftStart(Request &req, Response &resp) {
@@ -90,33 +100,57 @@ namespace Flug {
         MulticastBuilder mcast(m_adcs, "softStart", this);
         mcast.addField("pagesCount", (int) req.m_json["pagesCount"].asInt());
         localMultiRequest(mcast.getReqs(), mcast.getResps());
-        root["status"] = "success";
-        resp = root;
-        return true;
+        if (mcast.getStatus()) {
+            root["status"] = "success";
+            resp = root;
+            return true;
+        } else {
+            root["status"] = "failure";
+            resp = root;
+            return false;
+        }
     }
 
     bool NskCrate::handleWaitForTrigger(Request &req, Response &resp) {
         Json::Value root;
         MulticastBuilder mcast(m_adcs, "waitForTrigger", this);
         localMultiRequest(mcast.getReqs(), mcast.getResps());
-        root["status"] = "success";
-        resp = root;
-        return true;
+        if (mcast.getStatus()) {
+            root["status"] = "success";
+            resp = root;
+            return true;
+        } else {
+            root["status"] = "failure";
+            resp = root;
+            return false;
+        }
     }
 
     bool NskCrate::handleCalibration(Request &req, Response &resp) {
         Json::Value root;
         MulticastBuilder mcast(m_adcs, "calibrate", this);
         localMultiRequest(mcast.getReqs(), mcast.getResps());
-        root["status"] = "success";
-        resp = root;
-        return true;
+        if (mcast.getStatus()) {
+            root["status"] = "success";
+            resp = root;
+            return true;
+        } else {
+            root["status"] = "failure";
+            resp = root;
+            return false;
+        }
     }
 
     bool NskCrate::handleDownloadData(Request &req, Response &resp) {
         Json::Value root;
         MulticastBuilder mcast(m_adcs, "downloadData", this);
         localMultiRequest(mcast.getReqs(), mcast.getResps());
+        if (!mcast.getStatus()) {
+            root["status"] = "error";
+            root["description"] = "Failed to download from one or more module(s). Please, check connection.";
+            resp = root;
+            return true;
+        }
 
         int i = 0;
         for (auto lresp: mcast.getResps()) {
@@ -174,6 +208,36 @@ namespace Flug {
         root["status"] = "success";
         resp = root;
         return true;
+    }
+
+    bool NskCrate::handleReconnect(Request &req, Response &resp) {
+        Json::Value root;
+        MulticastBuilder mcast(m_adcs, "reconnect", this);
+        localMultiRequest(mcast.getReqs(), mcast.getResps());
+        if (mcast.getStatus()) {
+            root["status"] = "success";
+            resp = root;
+            return true;
+        } else {
+            root["status"] = "failure";
+            resp = root;
+            return false;
+        }
+    }
+
+    bool NskCrate::handleLoadFirmware(Request &req, Response &resp) {
+        Json::Value root;
+        MulticastBuilder mcast(m_adcs, "loadFirmware", this);
+        localMultiRequest(mcast.getReqs(), mcast.getResps());
+        if (mcast.getStatus()) {
+            root["status"] = "success";
+            resp = root;
+            return true;
+        } else {
+            root["status"] = "failure";
+            resp = root;
+            return false;
+        }
     }
 }
 

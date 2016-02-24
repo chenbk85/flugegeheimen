@@ -71,7 +71,9 @@ DispatchingTable = {
 	'calibrate': ProxyRequest,
 	'getAdcsList': ProxyRequest,
 	'ping': ProxyRequest,
-	'setPagesCount': ProxyRequest}
+	'setPagesCount': ProxyRequest,
+	'reconnect': ProxyRequest,
+	'loadFirmware': ProxyRequest}
 
 
 def HandleRequest(s):
